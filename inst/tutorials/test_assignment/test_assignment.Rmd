@@ -18,6 +18,14 @@ Write the R code required to add two plus two:
 
 ```
 
+## Exercise with Plot
+
+Write the R code required to plot `mtcars$mpg` vs. `mtcars$disp`:
+
+```{r plot, exercise=TRUE}
+plot(mtcars$mpg, mtcars$disp)
+```
+
 ### Exercise with Hint
 
 Modify the following code to limit the number of rows printed to 5:
