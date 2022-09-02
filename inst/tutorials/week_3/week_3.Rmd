@@ -1,0 +1,191 @@
+---
+title: "Week 3: Visualizing Tidy Data"
+output: learnr::tutorial
+runtime: shiny_prerendered
+---
+
+```{r setup_hide, include=FALSE}
+library(learnr)
+
+custom_checker <- function(label, user_code, check_code, envir_result, evaluate_result, last_value, stage, ...) {
+  # this is a code check
+  #if(stage != "code_check") {
+    txt_dir <- file.path(system.file(package = "fofpack"), "answers")
+    if(!dir.exists(txt_dir)) {
+      dir.create(txt_dir)
+    }
+    txt_file = file.path(system.file(package = "fofpack"), "answers", "week_3_answers.txt")
+    write_lines(label, txt_file, append = TRUE)
+    write_lines(user_code, txt_file, append = TRUE)
+    
+    list(message = "Answer Submitted!", correct = TRUE, type = "success", location = "replace")
+  #}
+
+}
+
+tutorial_options(exercise.checker = custom_checker)
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+# Forests of the Future Week 3
+## Visualizing Tidy Data
+
+Welcome to the first `learnr` style tutorial based assignment for this course! In week 3 we will be working in small groups to tidy some forest data and then visualize it using `ggplot2`. Each group will produce one visualization at the end of class, that will be placed on the week 3 lecture slides.
+
+Please go through all the exercises below. Any exercise with a 'Submit' button are exercises that will be marked. You must click the `Submit` button once you are happy with the code (just running the code won't submit it, allowing you to test your code first). If you do not click 'Submit' your code will not be saved to the text file you will be required to upload to Canvas for marking. If you close this Assignment and reopen it, your progress should be saved (even if you have not pressed 'Submit' on anything yet). Also note that there will be some multiple choice questions in this assignment. They will *not* be marked, except for completion. You should try to answer, but getting it wrong will not be counted against your mark. I will collect information on the answers to these questions to help track how well the class is doing.
+
+Now let's get to the assignment!
+
+### Setup
+
+To setup the data to tidy we start by loading the packages we will need today, and then load the datasets from the `fofpack` package, The dataset is called "Week3_FloridaForest". Try running the following code:
+
+```{r setup-exercise, exercise=TRUE}
+library(tidyverse)
+library(fofpack)
+data("Week3_FloridaForest")
+```
+
+```{r setup-exercise-hint}
+library(dplyr)
+library(ggplot2)
+library(tidyverse)
+library(fofpack)
+data("Week3_FloridaForest")
+```
+
+```{r setup, include=FALSE}
+library(dplyr)
+library(ggplot2)
+library(tidyverse)
+library(fofpack)
+data("Week3_FloridaForest")
+```
+
+The `data("Week3_FloridaForest")` command will have loaded 4 objects into R. Copy and paste the code from the box into the Rstudio console to see them in the environment browser (hint: use the 'hint' button to more easily copy the code).
+
+The 4 objects are: `fl_florida`, the main dataset, `REF_FORTYPCD`, `REF_PHYSLCD`, and `REF_SPCD`, which contain additional information for various aspects of the main data. By joining this additional data to the main dataset, you can create useful additional context to it. For now, print out the 4 different objects to get an idea of what they look like. Then do a summary of `fl_forests`.
+
+```{r summary, exercise=TRUE}
+
+
+
+
+
+```
+
+```{r summary-hint}
+REF_FORTYPCD
+summary(fl_florida)
+```
+
+### Answer a Question
+
+use the R box below to answer the multiple choice question below it:
+
+```{r common-cols, exercise=TRUE}
+
+```
+
+```{r common-cols-hint}
+names(fl_forests)
+names(REF_FORTYPCD)
+```
+
+```{r question_1, echo=FALSE}
+question("What columns do `fl_forests` and `REF_FORTYPCD` have in common?",
+         answer("PLT_CN"),
+         answer("DIA"),
+         answer("FORTYPCD", correct = TRUE),
+         answer("TREES"),
+         allow_retry = TRUE)
+```
+
+## Join Two Dataset
+
+### Exercise 1 
+
+Merge the `fl_forest` data with the `REF_FORTYPCD` data using `left_join` from the `dplyr` package, and call it `fl_forests_typ`. `REF_FORTYPCD` contains descriptions of the forest type, which is only represented as a code in `fl_forest`. Join using the shared column of the two dataset. Then print the newly joined result. 
+
+```{r join_1, exercise=TRUE}
+
+fl_forests_typ <- fl_forests %>% 
+  
+
+```
+
+```{r join_1-hint}
+
+fl_forests_typ <- fl_forests %>% 
+  left_join(data_to, data_from, by = "shared_column")
+
+```
+
+```{r join_1-solution}
+
+fl_forests_typ <- fl_forests %>% 
+  left_join(REF_FORTYPCD, by = 'FORTYPCD')
+
+```
+
+```{r question_2, echo=FALSE}
+
+question("What happens if you don't tell `left_join()` what variable to join by?",
+         answer("It doesn't work and you get an error"),
+         answer("It joins by all the variables"),
+         answer("It automatically joins on variables shared between the datasets",
+                correct = TRUE),
+         allow_retry = TRUE)
+
+```
+
+```{r join_1_setup, include=FALSE}
+fl_forests_typ <- fl_forests %>% 
+  left_join(REF_FORTYPCD, by = 'FORTYPCD')
+```
+
+Now merge the `fl_forests_typ` data, which you just created, with the `REF_SPCD` data, which should add tree species descriptions to the dataset. Call the result `fl_forests_typ_sp`.
+
+```{r join_2, exercise=TRUE, exercise.setup="join_1_setup"}
+fl_forests_typ_sp <- fl_forests_typ %>% 
+  left_join()
+```
+
+```{r join_2-solution}
+fl_forests_typ_sp <- fl_forests_typ %>% 
+  left_join(REF_SPCD, by = "SPCD")
+```
+
+```{r join_2_setup, include=FALSE, exercise.setup="join_1_setup"}
+fl_forests_typ_sp <- fl_forests_typ %>% 
+  left_join(REF_SPCD, by = "SPCD")
+```
+
+```{r join_2-check}
+ls()
+```
+
+Lastly, merge the `REF_PHYSCLD` data to `fl_forests_typ_sp`, which should add physical conditions information. Call the result `fl_forests_typ_sp_phy`.
+
+```{r join_3, exercise=TRUE, exercise.setup="join_2_setup"}
+fl_forests_typ_sp_phy <- fl_forests_typ_sp %>% 
+  left_join()
+```
+
+```{r join_3-solution}
+fl_forests_typ_sp_phy <- fl_forests_typ_sp %>% 
+  left_join(REF_PHYSCLCD, by = "PHYSCLCD")
+```
+
+```{r join_3_setup, include=FALSE, exercise.setup="join_2_setup"}
+fl_forests_typ_sp_phy <- fl_forests_typ_sp %>%
+ left_join(REF_PHYSCLCD, by = "PHYSCLCD")
+```
+
+```{r join_3-code-check}
+ls()
+```
+
+```{r fake_exercise, exercise=TRUE, exercise.setup="join_3_setup"}
+
+```
