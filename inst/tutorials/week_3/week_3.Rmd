@@ -15,7 +15,6 @@ custom_checker <- function(label, user_code, check_code, envir_result, evaluate_
       dir.create(txt_dir)
     }
     txt_file = file.path(system.file(package = "fofpack"), "answers", "week_3_answers.txt")
-    write_lines("---", txt_file, append = TRUE)
     write_lines("exercise", txt_file, append = TRUE)
     write_lines(label, txt_file, append = TRUE)
     write_lines(Sys.time(), txt_file, append = TRUE)
@@ -34,8 +33,8 @@ tutorial_event_recorder <- function(tutorial_id, tutorial_version, user_id,
     if(!dir.exists(txt_dir)) {
       dir.create(txt_dir)
     }
+    cat(user_id)
     txt_file = file.path(system.file(package = "fofpack"), "answers", "week_3_answers.txt")
-    write_lines("---", txt_file, append = TRUE)
     write_lines("question", txt_file, append = TRUE)
     write_lines(data$label, txt_file, append = TRUE)
     write_lines(Sys.time(), txt_file, append = TRUE)
@@ -183,7 +182,7 @@ fl_forests_typ_sp <- fl_forests_typ %>%
   left_join(REF_SPCD, by = "SPCD")
 ```
 
-```{r join_2-check}
+```{r join_2-code-check}
 ls()
 ```
 
@@ -208,6 +207,60 @@ fl_forests_typ_sp_phy <- fl_forests_typ_sp %>%
 ls()
 ```
 
-```{r fake_exercise, exercise=TRUE, exercise.setup="join_3_setup"}
+## Summarise the Data
 
+Create a summary of average HT and DIA for each forest type (FORTYPCD). Name the result `fl_forests_summary`
+
+```{r summary_time, exercise=TRUE, exercise.setup="join_3_setup"}
+fl_forests_summary <- fl_forests_typ_sp_phy %>% 
+  group_by()  %>% 
+  summarize()
+```
+
+```{r summary_time-solution}
+fl_forests_summary <- fl_forests_typ_sp_phy %>% 
+  group_by(FORTYPCD) %>% 
+  summarize(HT_mean = mean(HT, na.rm=T),
+            DIA_mean = mean(DIA, na.rm=T))
+```
+
+```{r summary_time_setup, include=FALSE, exercise.setup="join_3_setup"}
+fl_forests_summary <- fl_forests_typ_sp_phy %>% 
+  group_by(FORTYPCD) %>% 
+  summarize(HT_mean = mean(HT, na.rm=T),
+            DIA_mean = mean(DIA, na.rm=T))
+```
+
+```{r summary_time-code-check}
+ls()
+```
+
+## Visualise the Data
+
+Using `ggplot2`, visualise the relationship between height and diameter.
+
+```{r ggplot_time, exercise=TRUE, exercise.setup="summary_time_setup"}
+ggplot(fl_forests_summary, aes()) +
+  
+```
+
+<div id="ggplot_time-hint">
+**Hint:** Look into the `geom_smooth()` function.
+</div>
+
+```{r ggplot_time-code-check}
+ls()
+```
+
+Explore the relationship between height and diameter for different TYPES (i.e., MESIC, XERIC, HYDRIC). Create a figure with a caption to explain your findings. This is the final product for the group assignment.
+
+```{r ggplot_final, exercise=TRUE, exercise.setup="summary_time_setup"}
+
+
+
+  
+```
+
+```{r ggplot_final-code-check}
+ls()
 ```
