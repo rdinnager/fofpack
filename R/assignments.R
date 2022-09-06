@@ -21,5 +21,6 @@ write_answers <- function(week, where = getwd()) {
   }
   file.copy(file.path(system.file(package = "fofpack"), "answers",
                       paste0("week_", week, "_answers.txt")),
-            where)
+            where,
+            overwrite = TRUE)
 }

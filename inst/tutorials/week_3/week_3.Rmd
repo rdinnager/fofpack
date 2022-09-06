@@ -15,24 +15,48 @@ custom_checker <- function(label, user_code, check_code, envir_result, evaluate_
       dir.create(txt_dir)
     }
     txt_file = file.path(system.file(package = "fofpack"), "answers", "week_3_answers.txt")
+    write_lines("---", txt_file, append = TRUE)
+    write_lines("exercise", txt_file, append = TRUE)
     write_lines(label, txt_file, append = TRUE)
+    write_lines(Sys.time(), txt_file, append = TRUE)
     write_lines(user_code, txt_file, append = TRUE)
+    write_lines("---", txt_file, append = TRUE)
     
     list(message = "Answer Submitted!", correct = TRUE, type = "success", location = "replace")
   #}
 
 }
 
+tutorial_event_recorder <- function(tutorial_id, tutorial_version, user_id, 
+                                    event, data) {
+  if(event == "question_submission") {
+    txt_dir <- file.path(system.file(package = "fofpack"), "answers")
+    if(!dir.exists(txt_dir)) {
+      dir.create(txt_dir)
+    }
+    txt_file = file.path(system.file(package = "fofpack"), "answers", "week_3_answers.txt")
+    write_lines("---", txt_file, append = TRUE)
+    write_lines("question", txt_file, append = TRUE)
+    write_lines(data$label, txt_file, append = TRUE)
+    write_lines(Sys.time(), txt_file, append = TRUE)
+    write_lines(data$answer, txt_file, append = TRUE)
+    write_lines(data$correct, txt_file, append = TRUE)
+    write_lines("---", txt_file, append = TRUE)
+  }
+}
+
 tutorial_options(exercise.checker = custom_checker)
+options(tutorial.event_recorder = tutorial_event_recorder)
 knitr::opts_chunk$set(echo = FALSE)
 ```
 
 # Forests of the Future Week 3
+
 ## Visualizing Tidy Data
 
 Welcome to the first `learnr` style tutorial based assignment for this course! In week 3 we will be working in small groups to tidy some forest data and then visualize it using `ggplot2`. Each group will produce one visualization at the end of class, that will be placed on the week 3 lecture slides.
 
-Please go through all the exercises below. Any exercise with a 'Submit' button are exercises that will be marked. You must click the `Submit` button once you are happy with the code (just running the code won't submit it, allowing you to test your code first). If you do not click 'Submit' your code will not be saved to the text file you will be required to upload to Canvas for marking. If you close this Assignment and reopen it, your progress should be saved (even if you have not pressed 'Submit' on anything yet). Also note that there will be some multiple choice questions in this assignment. They will *not* be marked, except for completion. You should try to answer, but getting it wrong will not be counted against your mark. I will collect information on the answers to these questions to help track how well the class is doing.
+Please go through all the exercises below. Any exercise with a 'Submit' button are exercises that will be marked. You must click the 'Submit Answer' button once you are happy with the code (just running the code won't submit it, allowing you to test your code first). If you do not click 'Submit Answer' your code will not be saved to the text file you will be required to upload to Canvas for marking. If you close this Assignment and reopen it, your progress should be saved (even if you have not pressed 'Submit Answer' on anything yet). Also note that there will be some multiple choice questions in this assignment. They will *not* be marked, except for completion. You should try to answer, but getting it wrong will not be counted against your mark. I will collect information on the answers to these questions to help track how well the class is doing.
 
 Now let's get to the assignment!
 
@@ -47,8 +71,6 @@ data("Week3_FloridaForest")
 ```
 
 ```{r setup-exercise-hint}
-library(dplyr)
-library(ggplot2)
 library(tidyverse)
 library(fofpack)
 data("Week3_FloridaForest")
@@ -103,9 +125,9 @@ question("What columns do `fl_forests` and `REF_FORTYPCD` have in common?",
 
 ## Join Two Dataset
 
-### Exercise 1 
+### Exercise 1
 
-Merge the `fl_forest` data with the `REF_FORTYPCD` data using `left_join` from the `dplyr` package, and call it `fl_forests_typ`. `REF_FORTYPCD` contains descriptions of the forest type, which is only represented as a code in `fl_forest`. Join using the shared column of the two dataset. Then print the newly joined result. 
+Merge the `fl_forest` data with the `REF_FORTYPCD` data using `left_join` from the `dplyr` package, and call it `fl_forests_typ`. `REF_FORTYPCD` contains descriptions of the forest type, which is only represented as a code in `fl_forest`. Join using the shared column of the two dataset. Then print the newly joined result.
 
 ```{r join_1, exercise=TRUE}
 
