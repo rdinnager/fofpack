@@ -2,50 +2,51 @@
 title: "Week 3: Visualizing Tidy Data"
 output: learnr::tutorial
 runtime: shiny_prerendered
+description: The assignment for week 3, where you will create a simple visualisation of forest data.
 ---
 
 ```{r setup_hide, include=FALSE}
 library(learnr)
 
-custom_checker <- function(label, user_code, check_code, envir_result, evaluate_result, last_value, stage, ...) {
-  # this is a code check
-  #if(stage != "code_check") {
-    txt_dir <- file.path(system.file(package = "fofpack"), "answers")
-    if(!dir.exists(txt_dir)) {
-      dir.create(txt_dir)
-    }
-    txt_file = file.path(system.file(package = "fofpack"), "answers", "week_3_answers.txt")
-    write_lines("exercise", txt_file, append = TRUE)
-    write_lines(label, txt_file, append = TRUE)
-    write_lines(Sys.time(), txt_file, append = TRUE)
-    write_lines(user_code, txt_file, append = TRUE)
-    write_lines("---", txt_file, append = TRUE)
-    
-    list(message = "Answer Submitted!", correct = TRUE, type = "success", location = "replace")
-  #}
-
-}
-
-tutorial_event_recorder <- function(tutorial_id, tutorial_version, user_id, 
-                                    event, data) {
-  if(event == "question_submission") {
-    txt_dir <- file.path(system.file(package = "fofpack"), "answers")
-    if(!dir.exists(txt_dir)) {
-      dir.create(txt_dir)
-    }
-    cat(user_id)
-    txt_file = file.path(system.file(package = "fofpack"), "answers", "week_3_answers.txt")
-    write_lines("question", txt_file, append = TRUE)
-    write_lines(data$label, txt_file, append = TRUE)
-    write_lines(Sys.time(), txt_file, append = TRUE)
-    write_lines(data$answer, txt_file, append = TRUE)
-    write_lines(data$correct, txt_file, append = TRUE)
-    write_lines("---", txt_file, append = TRUE)
-  }
-}
-
-tutorial_options(exercise.checker = custom_checker)
-options(tutorial.event_recorder = tutorial_event_recorder)
+# custom_checker <- function(label, user_code, check_code, envir_result, evaluate_result, last_value, stage, ...) {
+#   # this is a code check
+#   #if(stage != "code_check") {
+#     txt_dir <- file.path(system.file(package = "fofpack"), "answers")
+#     if(!dir.exists(txt_dir)) {
+#       dir.create(txt_dir)
+#     }
+#     txt_file = file.path(system.file(package = "fofpack"), "answers", "week_3_answers.txt")
+#     write_lines("exercise", txt_file, append = TRUE)
+#     write_lines(label, txt_file, append = TRUE)
+#     write_lines(Sys.time(), txt_file, append = TRUE)
+#     write_lines(user_code, txt_file, append = TRUE)
+#     write_lines("---", txt_file, append = TRUE)
+#     
+#     list(message = "Answer Submitted!", correct = TRUE, type = "success", location = "replace")
+#   #}
+# 
+# }
+# 
+# tutorial_event_recorder <- function(tutorial_id, tutorial_version, user_id, 
+#                                     event, data) {
+#   if(event == "question_submission") {
+#     txt_dir <- file.path(system.file(package = "fofpack"), "answers")
+#     if(!dir.exists(txt_dir)) {
+#       dir.create(txt_dir)
+#     }
+#     cat(user_id)
+#     txt_file = file.path(system.file(package = "fofpack"), "answers", "week_3_answers.txt")
+#     write_lines("question", txt_file, append = TRUE)
+#     write_lines(data$label, txt_file, append = TRUE)
+#     write_lines(Sys.time(), txt_file, append = TRUE)
+#     write_lines(data$answer, txt_file, append = TRUE)
+#     write_lines(data$correct, txt_file, append = TRUE)
+#     write_lines("---", txt_file, append = TRUE)
+#   }
+# }
+# 
+# tutorial_options(exercise.checker = custom_checker)
+# options(tutorial.event_recorder = tutorial_event_recorder)
 knitr::opts_chunk$set(echo = FALSE)
 ```
 
@@ -97,7 +98,7 @@ The 4 objects are: `fl_florida`, the main dataset, `REF_FORTYPCD`, `REF_PHYSLCD`
 
 ```{r summary-hint}
 REF_FORTYPCD
-summary(fl_florida)
+summary(fl_forests)
 ```
 
 ### Answer a Question
@@ -138,7 +139,7 @@ fl_forests_typ <- fl_forests %>%
 ```{r join_1-hint}
 
 fl_forests_typ <- fl_forests %>% 
-  left_join(data_to, data_from, by = "shared_column")
+  left_join(join_from, by = "shared_column")
 
 ```
 
@@ -264,3 +265,31 @@ Explore the relationship between height and diameter for different TYPES (i.e., 
 ```{r ggplot_final-code-check}
 ls()
 ```
+
+## Submit
+
+```{r context="server"}
+learnrhash::encoder_logic()
+```
+
+Once you have completed the assignment to your satisfaction, please click the 'generate' button below. This will create a text code that you can copy and paste into the assignment text submission form on canvas, and which I can use to regenerate your answers. Please make sure you copy the entire code. The easiest way is to click the copy button in at the top right. This will copy the entire code to the clipboard.  
+
+Link to Week 3 Assignment: \  
+[Undergraduate](https://fiu.instructure.com/courses/147557/assignments/1965847) \  
+[Graduate](https://fiu.instructure.com/courses/140925/assignments/1900197) \  
+
+
+```{r encode, echo=FALSE}
+learnrhash::encoder_ui(ui_before = NULL)
+```
+
+<!--### Decode
+
+```{r context="server"}
+learnrhash::decoder_logic()
+```
+
+```{r decode, echo=FALSE}
+learnrhash::decoder_ui()
+```
+-->

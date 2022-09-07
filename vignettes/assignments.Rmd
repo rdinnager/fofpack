@@ -1,0 +1,113 @@
+depr---
+title: "Forests of the Future: How to Complete and Submit Assignments"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Forests of the Future: How to Complete and Submit Assignments}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+## Installing `fofpack`
+
+The `fofpack` package includes all data and assignments necessary for the 
+course Forests of the Future. It is regularly updated so it will be necessary
+to frequently reinstall the package to make sure you have all the most recent
+update. This document shows you how to install `fofpack` for the first time. 
+The procedure to *re*-install is exactly the same. Doing the following will
+update `fofpack` to the latest available version.
+
+The first thing you need is to make sure that the R package `devtools` is 
+installed:
+
+```{r install_devtools}
+install.packages("devtools")
+```
+
+Once `devtools` is installed, then you can run the following:
+
+```{r install_fofpack}
+library(devtools)
+install_github("rdinnager/fofpack", dependencies = TRUE, upgrade = TRUE)
+```
+
+Note that if `devtools` has not been installed properly then `library(devtools)`
+will fail with an error. If this is the case, try installing `devtools` again.
+`dependencies = TRUE` and `upgrade = TRUE` should force the installation or
+upgrading of any package dependencies of `fofpack`, so you should not have to
+install dependencies manually. The output of the above command will depend
+on what package you have installed already.
+
+To test if `fofpack` has been installed properly, run `library(fofpack)`. 
+Assignments should appear in the 'Tutorial' pane of RStudio, where they will
+be prefixed by the week (e.g. Week 3: Visualising Tidy Data). If they do not
+appear, try restarting R by clicking 'Session', then 'Restart R' from the RStudio
+menu:
+
+![Restart R Screenshot](images/restart_r.png)
+
+## Doing Assignments
+
+### Assignment in the 'Tutorial' Pane:
+
+![Tutorial Pane Screenshot](images/tutorial_pane.png)
+
+
+Click on the 'Start Tutorial' button to render and load the assignment. If for
+some reason the assignment is still not showing up in the 'Tutorial' pane, even
+after restarting R, you can run the assignment by typing 
+`learnr::run_tutorial("week_?", "fofpack")` in the R console, replacing `?` with
+week number for the desired assignment (e.g. `learnr::run_tutorial("week_3", "fofpack")`). 
+It should look something like this:
+
+![Tutorial Screenshot](images/tutorial_example.png)
+
+Go through the assignment, following the instructions. Code boxes with
+a 'Submit Answer' box are required to be completed for full marks.
+Note that the 'Submit Answer' button currently does not do anything other
+than run the code in the box. 
+
+![Submit Button](images/submit_button.png)
+
+## Submitting Your Work
+
+To actually submit your answers you use the 'Submit' section of the assignment. 
+Click on the 'Submit' section on the left hand navigation bar for the assignment
+
+![Submit Section](images/submit.png)
+
+It should look like this:
+
+![Submit Page](images/generate_page.png)
+
+Click on the 'Generate' button when you are ready to submit (e.g. you have filled
+in all of the required code boxes and answered the questions). This will generate
+a text code like this:
+
+![Hash Code](images/hash_code.png)
+
+This is called a 'hash' code, and your answers are encrypted within it. I can retrieve
+your answers from this code once you submit it on Canvas. Next, click the 'Copy hash to clipboard' ![copy button](images/copy_button.png) button to copy the hash code. This is what you will paste into the assignment on Canvas. On Canvas paste the copied hash code into the assignment text box:
+
+![Canvas Submit](images/canvas_submit.png)
+
+Please do not add any additional text in the text box or it will corrupt the
+hash code and I won't be able to retrieve your answers. If you need to add any
+additional information please use the 'comment' field.
+
+
+## Saving Your Work
+
+Progress on your assignment should be saved automatically so that if you close 
+it then reopen it, you should not lose anything. On the left side of the assignment
+is a small 'Start Over' button. Be careful! If you click this the assignment will
+be reset and you will lose all of your work! Individual exercises can also be reset
+using the 'Start Over' button in the code box:
+
+![Start Over in Box](images/startover_box.png)

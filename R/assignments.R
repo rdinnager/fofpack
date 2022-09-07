@@ -1,5 +1,9 @@
 #' Write your submitted answers from the assignment to a text file
 #'
+#' `r lifecycle::badge('deprecated')`
+#' This function is no longer required because of the new submission system
+#' incorporated directly into assignments.
+#'
 #' Get a text file of your answers to the assignment that you can upload to
 #' Canvas.
 #'

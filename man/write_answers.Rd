@@ -17,6 +17,11 @@ do you want to write the text file. Defaults to your working directory.}
 The path to a text file with answers
 }
 \description{
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
+This function is no longer required because of the new submission system
+incorporated directly into assignments.
+}
+\details{
 Get a text file of your answers to the assignment that you can upload to
 Canvas.
 }
