@@ -24,17 +24,19 @@ The procedure to *re*-install is exactly the same. Doing the following will
 update `fofpack` to the latest available version.
 
 The first thing you need is to make sure that the R package `devtools` is 
-installed:
+installed. 
 
 ```{r install_devtools}
-install.packages("devtools")
+if(!require(devtools)) {
+  install.packages("devtools")
+}
 ```
 
 Once `devtools` is installed, then you can run the following:
 
 ```{r install_fofpack}
 library(devtools)
-install_github("rdinnager/fofpack", dependencies = TRUE, upgrade = TRUE)
+install_github("rdinnager/fofpack", dependencies = TRUE, upgrade = TRUE, force = TRUE)
 ```
 
 Note that if `devtools` has not been installed properly then `library(devtools)`
@@ -44,11 +46,29 @@ upgrading of any package dependencies of `fofpack`, so you should not have to
 install dependencies manually. The output of the above command will depend
 on what package you have installed already.
 
-To test if `fofpack` has been installed properly, run `library(fofpack)`. 
-Assignments should appear in the 'Tutorial' pane of RStudio, where they will
-be prefixed by the week (e.g. Week 3: Visualising Tidy Data). If they do not
-appear, try restarting R by clicking 'Session', then 'Restart R' from the RStudio
-menu:
+When you run the above code you might get a dialog box like this:
+![Source Question](images/source_question.png)
+You will need to make a choice before installation will proceed. I recommend choosing 'No', since you should not need to install from source most of the time (this just means the package is 'compiled' on your computer instead of simply downloading a 'precompiled' package.)
+
+During installation you might get a warning like this:
+
+![Installation Warning](images/install_error.png)
+
+In most cases this can be ignored because the package was restored from the old version. To get rid of this warning, you musr clear your workspace and then restart R. The above issue happens if the package was in use when R tried to reinstall it. It generally only happens on Windows.
+
+To test if `fofpack` has been installed properly, run `library(fofpack)`, and
+make sure you get no errors. 
+
+**###Important**: To make sure `fofpack` has successfully been updated to the latest version run:
+
+```{r check_version}
+library(fofpack)
+fofpack_up_to_date()
+```
+
+If your `fofpack` is not up to date this function will warn you and provide instructions on how up date.
+
+Once `fofpack` is installed, assignments should appear in the 'Tutorial' pane of RStudio, where they will be prefixed by the week (e.g. Week 3: Visualising Tidy Data). If they do not appear, try restarting R by clicking 'Session', then 'Restart R' from the RStudio menu:
 
 ![Restart R Screenshot](images/restart_r.png)
 
