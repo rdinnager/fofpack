@@ -14,6 +14,8 @@ Imports:
     learnr (>= 0.10.6.9000),
     learnrhash (>= 0.2.0),
     lifecycle,
+    rlang,
+    rstudioapi,
     rvcheck
 Depends: 
     tidyverse

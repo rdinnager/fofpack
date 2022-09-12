@@ -1,0 +1,247 @@
+---
+title: "Forests of the Future: Exam 1 Practice"
+output: 
+  learnr::tutorial:
+    progressive: true
+    allow_skip: true
+    language:
+      en:
+        button:
+          runcode: Test Code
+          submitanswer: Run Code
+runtime: shiny_prerendered
+description: Forests of the Future Practice Exam #1
+---
+
+```{r setup_hide, include=FALSE}
+library(learnr)
+library(fofpack)
+
+custom_checker <- function(label, user_code, check_code, envir_result, evaluate_result, envir_prep, last_value, stage, ...) {
+  # this is a code check
+  if(stage == "check") {
+    
+    fofpack::send_env_to_RStudio(envir_prep)
+    
+    rstudioapi::sendToConsole(user_code, focus = TRUE)
+    
+    fofpack::set_env(envir_result)
+
+    list(message = "Code Run; Results Now Available in RStudio.", correct = TRUE, type = "success", location = "append")
+    
+  }
+
+}
+
+tutorial_options(exercise.checker = custom_checker)
+
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+
+```{r setup}
+library(tidyverse)
+library(fofpack)
+data("Week3_FloridaForest")
+```
+
+The following code loads the packages you will need for this exam, and the dataset
+you will be using. The dataset is the same you used for your week 3 assignment,
+with data on forest trees in Florida. If you click 'Run Code' it will be run
+in RStudio, so you can view the environment browser, and access all of RStudio's
+features.
+
+```{r do_setup, exercise=TRUE}
+library(tidyverse)
+library(fofpack)
+data("Week3_FloridaForest")
+```
+
+```{r do_setup-check}
+ls()
+```
+
+## Forests of the Future Exam 1 {data-progressive=TRUE}
+
+Use the code boxes below each exercise to follow the directions.
+
+### Question 1
+
+Using the code box below, please print out the column names of `fl_forests` and
+`REF_SPCD`. 
+
+```{r q1, exercise=TRUE}
+
+
+
+
+
+```
+
+```{r q1-check}
+ls()
+```
+
+### Question 2
+
+Assign the name of the column shared between `fl_forests` and 
+`REF_SPCD` to an object called `cc`, then print it.
+
+```{r q2, exercise=TRUE}
+
+
+
+
+
+```
+
+```{r q2-check}
+ls()
+```
+
+### Question 3
+
+Merge the data.frame `fl_forests` with `REF_FORTYPCD`, `REF_PHYSCLCD`, and `REF_SPCD`. 
+Call this new data.frame `fl_forests_all` and use it to answer the next few questions.
+
+```{r q3, exercise=TRUE}
+
+
+
+
+
+```
+
+```{r q3-check}
+ls()
+```
+
+```{r fl_forests_all_setup}
+fl_forests_all <- fl_forests %>%
+  left_join(REF_FORTYPCD) %>%
+  left_join(REF_PHYSCLCD) %>%
+  left_join(REF_SPCD)
+```
+
+
+### Question 4
+
+In the data.frame `fl_forests_all` convert SPCD,  FORTYPCD, and PHYSCLCD columns  
+from an integer type to a factor type. Use base r OR `tidyverse`.
+
+```{r q4, exercise=TRUE, exercise.setup='fl_forests_all_setup'}
+
+
+
+
+
+```
+
+```{r q4-check}
+ls()
+```
+
+<div id="q4-hint">
+**Hint:** Use the `as.factor()` function
+</div>
+
+### Question 5
+
+How many tree species are there in the `fl_forests_all` dataset?
+
+
+```{r q5, exercise=TRUE, exercise.setup='fl_forests_all_setup'}
+
+
+
+
+
+```
+
+```{r q5-check}
+ls()
+```
+
+<div id="q5-hint">
+**Hint:** There are several ways to answer the question. You want to find the
+number of `unique` or distinct entries in a column.
+Try `?unique` or `?n_distinct`. Is one of these easier?
+</div>
+
+### Question 6
+
+Summarise the number of different species in each type (column `Type`) of 
+forest using `group_by()` and `summarise`.
+
+```{r q6, exercise=TRUE, exercise.setup='fl_forests_all_setup'}
+
+
+
+
+
+```
+
+```{r q6-check}
+ls()
+```
+
+<div id="q6-hint">
+**Hint:** `group_by()` can take multiple columns as arguments (indicated by
+`...` as an argument in the documentation)
+</div>
+
+### Question 9
+
+Print out the help documentation for the `dplyr` function `slice()`. Write a
+description of what it does in a comment. Use `slice()` or one of its helper
+functions to return the first 10 rows of `fl_forests_all`. For a bonus mark,
+add a line of code showing how you would do the same thing using base R.
+
+```{r q9, exercise=TRUE, exercise.setup='fl_forests_all_setup'}
+
+
+
+
+
+```
+
+```{r q9-check}
+ls()
+```
+
+<div id="q9-hint">
+**Hint:** If you have trouble understanding the documentation, scroll to the
+very bottom where you will find examples of using the function. I often find this
+the most useful when learning a new function. You can modify a example to answer
+the question. For the bonus question: what you want to do is Extract part of a
+data.frame.
+</div>
+
+## Submit
+
+```{r context="server"}
+learnrhash::encoder_logic()
+```
+
+Once you have completed the assignment to your satisfaction, please click the 'generate' button below. This will create a text code that you can copy and paste into the assignment text submission form on canvas, and which I can use to regenerate your answers. Please make sure you copy the entire code. The easiest way is to click the copy button in at the top right. This will copy the entire code to the clipboard.  
+
+Link to Exam Practice #1 Assignment: \  
+[Undergraduate](https://fiu.instructure.com/courses/147557/assignments/1965847) \  
+[Graduate](https://fiu.instructure.com/courses/140925/assignments/1900197) \  
+
+
+```{r encode, echo=FALSE}
+learnrhash::encoder_ui(ui_before = NULL)
+```
+
+<!--### Decode
+
+```{r context="server"}
+learnrhash::decoder_logic()
+```
+
+```{r decode, echo=FALSE}
+learnrhash::decoder_ui()
+```
+-->
+
