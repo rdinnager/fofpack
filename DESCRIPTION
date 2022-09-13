@@ -11,6 +11,7 @@ Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.2.1
 Imports: 
     clipr,
+    cyphr,
     learnr (>= 0.10.6.9000),
     learnrhash (>= 0.2.0),
     lifecycle,
@@ -24,6 +25,7 @@ Remotes:
     rundel/learnrhash
 Suggests: 
     knitr,
-    rmarkdown
+    rmarkdown,
+    sodium
 VignetteBuilder: knitr
 URL: https://rdinnager.github.io/fofpack/
