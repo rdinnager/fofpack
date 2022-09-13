@@ -40,21 +40,24 @@ knitr::opts_chunk$set(echo = FALSE)
 
 
 ```{r setup}
+rm(list = ls())
 library(tidyverse)
 library(fofpack)
 data("Week3_FloridaForest")
+REF_SPCD <- REF_SPCD %>%
+  mutate(Species = paste(Genus, Species))
 ```
 
-The following code loads the packages you will need for this exam, and the dataset
-you will be using. The dataset is the same you used for your week 3 assignment,
-with data on forest trees in Florida. If you click 'Run Code' it will be run
-in RStudio, so you can view the environment browser, and access all of RStudio's
-features.
+The following code loads the packages you will need for this exam, and the dataset you will be using (and clears the workspace). It also adds a column with the full 'binomial' species name of each species (made up of the Genus and Species epithets). The dataset is the same you used for your week 3 assignment, with data on forest trees in Florida. If you click 'Run Code' it will be run in RStudio, so you can view the environment browser, and access all of RStudio's
+features. 
 
 ```{r do_setup, exercise=TRUE}
+rm(list = ls())
 library(tidyverse)
 library(fofpack)
 data("Week3_FloridaForest")
+REF_SPCD <- REF_SPCD %>%
+  mutate(Species = paste(Genus, Species))
 ```
 
 ```{r do_setup-check}
@@ -190,12 +193,45 @@ ls()
 `...` as an argument in the documentation)
 </div>
 
+### Question 7
+
+Make a data.frame with the mean height (`HT`) and count of each species. Call it `fl_forests_HT_N`. *Bonus question:* Add code that prints out the name or code of the species which has the highest average height.
+
+```{r q7, exercise=TRUE, exercise.setup='fl_forests_all_setup'}
+
+
+
+
+
+```
+
+```{r q7-check}
+ls()
+```
+
+<div id="q7-hint">
+**Hint:** For the bonus the `dplyr` function `arrange()` might be useful or
+possibly the base R function `which.max()`?</div>
+
+### Question 8
+
+Choose one species from `fl_forests_all` with at least 10 data rows, and make a new data.frame with only the rows for your chosen species. Call it `fl_forests_my_sp`. *Bonus:* Make a plot for your species (any plot!).
+
+```{r q8, exercise=TRUE, exercise.setup='fl_forests_all_setup'}
+
+
+
+
+
+```
+
+```{r q8-check}
+ls()
+```
+
 ### Question 9
 
-Print out the help documentation for the `dplyr` function `slice()`. Write a
-description of what it does in a comment. Use `slice()` or one of its helper
-functions to return the first 10 rows of `fl_forests_all`. For a bonus mark,
-add a line of code showing how you would do the same thing using base R.
+Using `fl_forests_all`, plot height (`HT`) on the y axis vs diameter (`DIA`) on the x axis (using ggplot2). In a code comment, answer the following questions: Do any of the points on the plot look unusual or unexpected? Why? *Bonus:* Remove the unusual points from the plot.
 
 ```{r q9, exercise=TRUE, exercise.setup='fl_forests_all_setup'}
 
@@ -209,7 +245,26 @@ add a line of code showing how you would do the same thing using base R.
 ls()
 ```
 
-<div id="q9-hint">
+### Question 10
+
+Print out the help documentation for the `dplyr` function `slice()`. Write a
+description of what it does in a comment. Use `slice()` or one of its helper
+functions to return the first 10 rows of `fl_forests_all`. For a bonus mark,
+add a line of code showing how you would do the same thing using base R.
+
+```{r q10, exercise=TRUE, exercise.setup='fl_forests_all_setup'}
+
+
+
+
+
+```
+
+```{r q10-check}
+ls()
+```
+
+<div id="q10-hint">
 **Hint:** If you have trouble understanding the documentation, scroll to the
 very bottom where you will find examples of using the function. I often find this
 the most useful when learning a new function. You can modify a example to answer
