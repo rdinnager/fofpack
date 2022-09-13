@@ -2,7 +2,7 @@
 #'
 #' Always make sure fofpack is up to date before satrting any assignment!
 #'
-#' @return `TRUE` if fofpack is up to date, `FALSE` otherwise
+#' @return Invisibly returns `TRUE` if fofpack is up to date, `FALSE` otherwise
 #' @export
 #'
 #' @examples
@@ -25,10 +25,10 @@ fofpack_up_to_date <- function() {
                       library(fofpack)
                       fofpack_up_to_date()')
 
-    return(FALSE)
+    return(invisible(FALSE))
   } else {
     message("Everything looks up to date for fofpack!")
-    return(TRUE)
+    return(invisible(TRUE))
   }
 
 }
