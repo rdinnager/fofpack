@@ -4,7 +4,7 @@
 \alias{send_env_to_RStudio}
 \title{Send an environment to RStudio Session}
 \usage{
-send_env_to_RStudio(env_from)
+send_env_to_RStudio(env_from, remove = "dput_to_string")
 }
 \arguments{
 \item{env_from}{The environment to send}
