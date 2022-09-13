@@ -1,6 +1,6 @@
 #' Check if fofpack is up to date.
 #'
-#' Always make sure fofpack is up to date before satrting any assignment!
+#' Always make sure fofpack is up to date before starting any assignment!
 #'
 #' @return Invisibly returns `TRUE` if fofpack is up to date, `FALSE` otherwise
 #' @export

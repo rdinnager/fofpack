@@ -7,7 +7,7 @@
 fofpack_up_to_date()
 }
 \value{
-\code{TRUE} if fofpack is up to date, \code{FALSE} otherwise
+Invisibly returns \code{TRUE} if fofpack is up to date, \code{FALSE} otherwise
 }
 \description{
 Always make sure fofpack is up to date before satrting any assignment!
