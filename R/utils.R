@@ -10,4 +10,3 @@ run_exam_1 <- function() {
   learnr::run_tutorial(local_file)
 }
 
-run_exam_1()
