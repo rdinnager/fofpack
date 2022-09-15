@@ -202,7 +202,7 @@ ls()
 
 Using ggplot2, plot a visual summary of mean heights for each `Type` of forest in `nj_forests_DIA_Type`.
 
-```{r qbonus, exercise=TRUE, exercie.setup='nj_forests_all_setup'}
+```{r qbonus, exercise=TRUE, exercise.setup='nj_forests_all_setup'}
 
 
 
