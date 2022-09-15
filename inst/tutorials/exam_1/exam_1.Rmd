@@ -38,6 +38,8 @@ tutorial_options(exercise.checker = custom_checker)
 knitr::opts_chunk$set(echo = FALSE)
 ```
 
+## Forests of the Future Exam 1 {data-progressive=TRUE}
+
 ### Setup
 
 ```{r setup}
@@ -64,9 +66,7 @@ REF_SPCD <- REF_SPCD %>%
 ls()
 ```
 
-## Forests of the Future Exam 1 {data-progressive=TRUE}
-
-Use the code boxes below each exercise to follow the directions.
+Use the code boxes below each exercise and follow the directions.
 
 ### Question 1
 
