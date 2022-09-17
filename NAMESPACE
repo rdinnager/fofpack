@@ -2,6 +2,7 @@
 
 export(access_exam)
 export(check_exam_avail)
+export(convert_hash_code)
 export(fofpack_up_to_date)
 export(send_env_to_RStudio)
 export(set_env)

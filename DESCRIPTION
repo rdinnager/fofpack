@@ -15,10 +15,13 @@ Imports:
     learnr (>= 0.10.6.9000),
     learnrhash (>= 0.2.0),
     lifecycle,
+    parsermd,
     rlang,
     rstudioapi,
-    rvcheck
+    rvcheck,
+    stringr
 Depends: 
+    R (>= 2.10),
     tidyverse
 Remotes: 
     rstudio/learnr,
@@ -29,3 +32,4 @@ Suggests:
     sodium
 VignetteBuilder: knitr
 URL: https://rdinnager.github.io/fofpack/
+LazyData: true

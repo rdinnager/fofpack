@@ -1,0 +1,136 @@
+---
+title: "Week 5 Lecture: Introduction to Species Distribution Modelling (SDM)"
+output: 
+  ioslides_presentation:
+    widescreen: true
+runtime: shiny_prerendered
+description: Forests of the Future Practice Exam #1
+---
+
+```{r setup_hide, include=FALSE}
+library(learnr)
+library(fofpack)
+
+custom_checker <- function(label, user_code, check_code, envir_result, evaluate_result, envir_prep, last_value, stage, ...) {
+  # this is a code check
+  if(stage == "check") {
+    
+    fofpack::send_env_to_RStudio(envir_prep)
+    
+    rstudioapi::sendToConsole(user_code, focus = TRUE)
+    
+    fofpack::set_env(envir_result)
+
+    list(message = "Code Run; Results Now Available in RStudio.", correct = TRUE, type = "success", location = "append")
+    
+  }
+
+}
+
+tutorial_options(exercise.checker = custom_checker)
+
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+```{r setup}
+library(fofpack)
+```
+
+## Forests of the Future Week 5
+
+### Species Distribution Modelling
+
+Russell Dinnage
+
+## What are SDMs
+
+* Sometimes called Environmental Niche Models (ENMs, I prefer SDM)
+* Possible the most well-developed application of classic Data Science and Machine Learning (ML) in Biology
+* They take in data on the environment at different sites or parts of a landscape and try predict where (or when, or how many) organisms will occur there. Data on the species themselves can also be used
+* Traditionally done on single species at a time, but 'joint' species distribution models are increasingly common
+
+## SDMs as Data Science
+
+- To make an SDM you use a Data Science workflow
+- The final model used to predict species occurrence is fit using Machine Learning techniques
+- A Data Science workflow has two major components: 
+  - Data
+  - a Model
+ 
+## Data and Models
+
+* Data Processing Steps
+* Model Building
+
+* Data feeds into Models
+* Models inform Data processing steps
+
+![](images/week_5_lecture_insertimage_1.png)
+
+
+## Data Science Steps
+
+> 1. A Question
+> 2. Collect Data
+> 3. Munge / Clean Data
+> 4. Transform Data for Model
+> 5. Analyze Data using Model
+> 6. Validate / Test Model
+> 7. Interpret Model
+
+## Data Science Steps
+
+1. A Question
+2. **Collect Data**
+3. **Munge / Clean Data**
+4. Transform Data for Model
+5. Analyze Data using Model
+6. Validate / Test Model
+7. Interpret Model
+
+## What is a Model?
+
+- Encodes a relationship between a set of inputs and outputs
+- For an SDM this is a (potentially complex and nonlinear) function that takes environmental variables as input and  its output is an occurrence pattern (could be abundance, probability, suitability, etc.)
+- Different Models differ in their assumptions, or inductive biases, and their parameters
+- Models are 'fit' to data
+  - Parameters are chosen based on how well the Model's output matches the real data
+  - This is an optimization problem
+
+## The Simplest Model?
+
+### The Linear Model
+
+- Models outputs as a 'linear' function of inputs
+- Inputs are 'predictor' variables
+- 
+- Fits a straight line between 
+
+## Fit a Linear Model to Reef Fish Data
+
+- Base R has a good collection of statistical methods including the linear model.
+
+```{r do_setup, exercise=TRUE}
+data("RF_abund")
+```
+
+```{r do_setup-check}
+ls()
+```
+
+
+## tidymodels
+
+```{r do_setup, exercise=TRUE}
+library(tidymodels)
+```
+
+```{r do_setup-check}
+ls()
+```
+
+
+## Setup
+
+
+

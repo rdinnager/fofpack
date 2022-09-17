@@ -1,0 +1,253 @@
+---
+title: "Forests of the Future: Exam 1"
+output: 
+  learnr::tutorial:
+    progressive: true
+    allow_skip: true
+    language:
+      en:
+        button:
+          runcode: Test Code
+          submitanswer: Run Code
+runtime: shiny_prerendered
+description: Forests of the Future Practice Exam #1
+---
+
+```{r setup_hide, include=FALSE}
+library(learnr)
+library(fofpack)
+
+custom_checker <- function(label, user_code, check_code, envir_result, evaluate_result, envir_prep, last_value, stage, ...) {
+  # this is a code check
+  if(stage == "check") {
+    
+    fofpack::send_env_to_RStudio(envir_prep)
+    
+    rstudioapi::sendToConsole(user_code, focus = TRUE)
+    
+    fofpack::set_env(envir_result)
+
+    list(message = "Code Run; Results Now Available in RStudio.", correct = TRUE, type = "success", location = "append")
+    
+  }
+
+}
+
+tutorial_options(exercise.checker = custom_checker)
+
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+## Forests of the Future Week 5 Assignment {data-progressive=TRUE}
+
+### Getting started with Species Distribution Modelling
+
+Species Distribution Modelling is fundamentally an exercise in predicting the occurrence or abundance of a species (or species`) using environmental variables and / or species traits. Collectively these 'predictor' variables are know as features.
+
+### Setup
+
+```{r setup}
+rm(list = ls())
+library(tidyverse)
+library(fofpack)
+data("NJ_Forest")
+REF_SPCD <- REF_SPCD %>%
+  mutate(Species = paste(Genus, Species))
+```
+
+The following code loads the packages you will need for this exam, and the dataset you will be using (and clears the workspace). It also adds a column with the full 'binomial' species name of each species (made up of the Genus and Species epithets). The data is from the same dataset as `fl_forests`, but this time, it is data from the state of New Jersey, and the main data.frame object is called `nj_forests`. If you click 'Run Code' it will be run in RStudio, so you can view the environment browser, and access all of RStudio's features. 
+
+```{r do_setup, exercise=TRUE}
+rm(list = ls())
+library(tidyverse)
+library(fofpack)
+data("NJ_Forest")
+REF_SPCD <- REF_SPCD %>%
+  mutate(Species = paste(Genus, Species))
+```
+
+```{r do_setup-check}
+ls()
+```
+
+Use the code boxes below each exercise and follow the directions.
+
+### Question 1
+
+Using the code box below, please print out the column names of `nj_forests` and
+`REF_SPCD`. 
+
+```{r q1, exercise=TRUE}
+
+
+
+
+
+```
+
+```{r q1-check}
+ls()
+```
+
+### Question 2
+
+Merge the data.frame `nj_forests` with `REF_FORTYPCD`, `REF_PHYSCLCD`, and `REF_SPCD`. Call this new data.frame `nj_forests_all` and use it to answer the next few questions.
+
+```{r q2, exercise=TRUE}
+
+
+
+
+
+```
+
+```{r q2-check}
+ls()
+```
+
+```{r nj_forests_all_setup}
+nj_forests_all <- nj_forests %>%
+  left_join(REF_FORTYPCD) %>%
+  left_join(REF_PHYSCLCD) %>%
+  left_join(REF_SPCD)
+```
+
+
+### Question 3
+
+In the data.frame `nj_forests_all` convert SPCD,  FORTYPCD, and PHYSCLCD columns  
+from an integer type to a factor type. Use base r OR `tidyverse`.
+
+```{r q3, exercise=TRUE, exercise.setup='nj_forests_all_setup'}
+
+
+
+
+
+```
+
+```{r q3-check}
+ls()
+```
+
+<div id="q3-hint">
+**Hint:** Use the `as.factor()` function
+</div>
+
+### Question 4
+
+Starting with `nj_forests_all`, summarise the number of different species in each type (column `Type`) of forest using `group_by()` and `summarise()`.
+
+```{r q4, exercise=TRUE, exercise.setup='nj_forests_all_setup'}
+
+
+
+
+
+```
+
+```{r q4-check}
+ls()
+```
+
+<div id="q4-hint">
+**Hint:** Remember how to count the number of unique values in a vector (think about how to combine length() and unique())? Apply this to each `Type` using `group_by()` and `summarise()`.
+</div>
+
+### Question 5
+
+Using `nj_forests_all` make a data.frame with the mean diameter (`DIA`) for each species. Call it `nj_forests_DIA`. *Bonus:* Add code that prints out the name or code of the species which has the highest average diameter.
+
+```{r q5, exercise=TRUE, exercise.setup='nj_forests_all_setup'}
+
+
+
+
+
+```
+
+```{r q5-check}
+ls()
+```
+
+<div id="q5-hint">
+**Hint:** `group_by()`, `summarise()` is a classic combo. For the bonus the `dplyr` function `arrange()` might be useful or possibly the base R function `which.max()`?</div>
+
+
+### Question 6
+
+Run the following code to generate a summary of mean diameter of each species in each Type of forest:
+
+```{r nj_forests_DIA_Type, exercise=TRUE, exercise.setup='nj_forests_all_setup'}
+nj_forests_DIA_Type <- nj_forests_all %>%
+  group_by(Type, SPCD) %>%
+  summarize(DIA_mean = mean(DIA, na.rm = TRUE))
+```
+
+Using this summary `nj_forests_DIA_Type` (which should be available in the code box below once you click 'Run Code' above), plot mean diameter (`DIA_mean`) on the y axis vs the type of forests (`Type`) on the x axis (using ggplot2). 
+
+```{r q6, exercise=TRUE, exercise.setup='nj_forests_all_setup'}
+
+
+
+
+
+```
+
+```{r q6-check}
+ls()
+```
+
+<div id="q6-hint">
+**Hint:** `geom_point()`
+</div>
+
+### Bonus Question
+
+Using ggplot2, plot a visual summary of mean heights for each `Type` of forest in `nj_forests_DIA_Type`.
+
+```{r qbonus, exercise=TRUE, exercise.setup='nj_forests_all_setup'}
+
+
+
+
+
+```
+
+```{r qbonus-check}
+ls()
+```
+
+<div id="qbonus-hint">
+**Hint:** Start with your code from Question 6. There are a number of geoms designed to visually summarize distributions of values in `ggplot2`. Try looking at `geom_boxplot()` or `geom_violin()`. The examples in the documentation might help you figure out how to use them. Don't forget to plot you data as points too, so you can see how the visual summary relates to them (also make sure the points are not covered, in other words, pay attention to the order of your `ggplot2` layers).
+</div>
+
+## Submit
+
+```{r context="server"}
+learnrhash::encoder_logic()
+```
+
+Once you have completed the assignment to your satisfaction, please click the 'generate' button below. This will create a text code that you can copy and paste into the assignment text submission form on canvas, and which I can use to regenerate your answers. Please make sure you copy the entire code. The easiest way is to click the copy button in at the top right. This will copy the entire code to the clipboard.  
+
+Link to Exam 1 Assignment: \  
+[Undergraduate](https://fiu.instructure.com/courses/147557/assignments/2005255) \  
+[Graduate](https://fiu.instructure.com/courses/140925/assignments/2005259) \  
+
+
+```{r encode, echo=FALSE}
+learnrhash::encoder_ui(ui_before = NULL)
+```
+
+<!--
+### Decode
+
+```{r context="server"}
+learnrhash::decoder_logic()
+```
+
+```{r decode, echo=FALSE}
+learnrhash::decoder_ui()
+```
+-->
+

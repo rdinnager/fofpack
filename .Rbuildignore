@@ -7,3 +7,5 @@
 ^pkgdown$
 ^\.github$
 ^inst\temp$
+^data-raw$
+^extdata$
