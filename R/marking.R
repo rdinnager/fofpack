@@ -87,6 +87,16 @@ generate_assignments <- function(path,
 
   hashes[failed] <- hashes2[failed]
 
+  failed <- map_lgl(hashes, ~ length(.x) == 0 || .x == "")
+
+  hashes3 <- map_if(htmls,
+                   failed,
+                   possibly(~ rvest::html_elements(.x, xpath = "/html/body/div/article/div/div/div/pre/text()") %>%
+                              rvest::html_text(),
+                            otherwise = ""))
+
+  hashes[failed] <- hashes3[failed]
+
   hashes[map_int(hashes, length) > 1] <- ""
 
   hashes <- flatten_chr(hashes)
