@@ -32,8 +32,16 @@ tutorial_options(exercise.checker = custom_checker)
 knitr::opts_chunk$set(echo = FALSE)
 ```
 
-```{r setup}
+```{r setup, include=FALSE}
 library(fofpack)
+library(tidyverse)
+library(tidymodels)
+library(sf)
+library(mapview)
+
+data("RF_abund")
+fish_dat <- RF_abund %>%
+  filter(SpeciesName == "Thalassoma pavo")
 ```
 
 ## Forests of the Future Week 5
@@ -103,25 +111,15 @@ Russell Dinnage
 
 - Models outputs as a 'linear' function of inputs
 - Inputs are 'predictor' variables
-- 
-- Fits a straight line between 
+- Outputs are predictions, and they are compare to 'response' variable(s)
+- Assumes responses are a additive linear function of predictors
 
 ## Fit a Linear Model to Reef Fish Data
-
-- Base R has a good collection of statistical methods including the linear model.
-
-```{r do_setup, exercise=TRUE}
-data("RF_abund")
-```
-
-```{r do_setup-check}
-ls()
-```
-
-
-## tidymodels
+### Setup
 
 ```{r do_setup, exercise=TRUE}
+library(fofpack)
+library(tidyverse)
 library(tidymodels)
 ```
 
@@ -129,8 +127,252 @@ library(tidymodels)
 ls()
 ```
 
+## Fit a Linear Model to Reef Fish Data
 
-## Setup
+- Base R has a good collection of statistical methods including the linear model.
+- `RF_abund` has data on the abundance of different reef species at different reefs around the world
+
+```{r map, echo=FALSE}
+data("RF_sites")
+RF_sites <- sf::st_as_sf(RF_sites, coords = c("SiteLong", "SiteLat"),
+                         crs = 4326)
+mapView(RF_sites)
+```
+
+```{r RF1, exercise=TRUE}
+data("RF_abund")
+RF_abund
+```
+
+```{r RF1-check}
+ls()
+```
+
+## Fit a Linear Model to Reef Fish Data
+
+- First let's choose a fish species to model
+- Thalassoma pavo: [Ornate Wrasse](https://www.fishbase.se/summary/Thalassoma-pavo.html)
+```{r, out.width = "300px"}
+knitr::include_graphics("images/week_5_lecture_insertimage_1.png")
+```
+
+```{r RF2, exercise=TRUE}
+fish_dat <- RF_abund %>%
+  filter(SpeciesName == "Thalassoma pavo")
+```
+
+```{r RF2-check}
+ls()
+```
+
+## Fit a Linear Model to Reef Fish Data
+
+- `lm()` is the basic linear model function in R.
+- Let's do a linear model on our fish species with temperature as a predictor
+
+```{r RF3, exercise=TRUE}
+mod <- lm(AbundanceAdult40 ~ MeanTemp_CoralWatch,
+          data = fish_dat)
+```
+
+```{r RF3-check}
+ls()
+```
+
+```{r RF4, exercise=TRUE}
+summary(mod)
+```
+
+```{r RF4-check}
+ls()
+```
+
+## Fit a Linear Model to Reef Fish Data
+
+```{r RF5, exercise=TRUE, fig.height=3}
+ggplot(fish_dat, aes(x = MeanTemp_CoralWatch, y = AbundanceAdult40)) +
+  geom_smooth(method = lm, se = FALSE, color = "red") + geom_point() + theme_minimal()
+```
+
+It is much easier to tell if the model is useful at all by visualizing.
 
 
+```{r RF5-check}
+ls()
+```
 
+## Fit a Linear Model to Reef Fish Data
+
+- This model is not a good fit, and there might be some other problems
+  - Models have assumptions
+  - Does our data fit the assumptions?
+- I won't go through all linear model assumption, but one is that the distribution of the data is not too extreme (skewed, or with long tails)
+
+## Fit a Linear Model to Reef Fish Data
+
+Distribution of Abundance:
+
+```{r abund_dist, echo=TRUE}
+ hist(fish_dat$AbundanceAdult40, breaks = 100)
+```
+
+## Fit a Linear Model to Reef Fish Data
+
+- One way to 'fix' the data is to transform it, for example:
+
+```{r abund_dist2,echo=TRUE}
+ hist(log(fish_dat$AbundanceAdult40), breaks = 100)
+```
+
+---
+However the main problem seems to stem from the fact that a line is not a good description on the response. Therefore, most SDM methods that are actually used allow for non-linear relationships. In this case (and many cases), some kind of hump shaped function might make sense.
+
+```{r plotit}
+p <- ggplot(fish_dat, aes(x = MeanTemp_CoralWatch, y = AbundanceAdult40)) +
+  geom_smooth(se = FALSE, color = "red") + geom_point() + theme_minimal()
+suppressMessages(print(p))
+```
+
+## `tidymodels`
+
+- `tidymodels` is an R package for statistical and machine learning models
+- It shares the philosophy of programming and data analysis with `tidyverse`
+- It has functions that mirror the step of Data Science that I presented earlier
+- Like `tidyverse` it is a meta-package, bundling several other packages together
+
+## `parsnip`: a `tidymodels` package to fit models
+
+- `parsnip` separates the model 'structure' from the implementation
+- It unifies inputs and outputs, so that it is simple to switch between different modelling methods without writing new code
+
+## Fit a Linear Model with `parsnip`
+
+```{r parsnip1, exercise=TRUE}
+mod_pars <- linear_reg(engine = "lm")
+mod_pars
+```
+
+```{r parsnip1-check}
+ls()
+```
+
+## Fit a Linear Model with `parsnip`
+
+- A model is fit using the `fit()` function
+- `parsnip` is designed work with pipe operatoros (`%>%` or `|>`) 
+
+```{r parsnip2, exercise=TRUE}
+mod_pars <- linear_reg(engine = "lm") %>%
+  fit(AbundanceAdult40 ~ MeanTemp_CoralWatch,
+      data = fish_dat)
+mod_pars
+```
+
+```{r parsnip2-check}
+ls()
+```
+
+## Fit a Linear Model with `parsnip`
+
+- Parameters are extracted with the `tidy()` function.
+
+```{r parsnip3, exercise=TRUE}
+mod_summ <- tidy(mod_pars)
+mod_summ
+```
+
+```{r parsnip3-check}
+ls()
+```
+
+## Fit a Linear Model with `parsnip`
+
+- Visualize the fit by prediction
+
+```{r parsnip4, exercise=TRUE}
+preds <- predict(mod_pars, fish_dat)
+preds
+pred_dat <- fish_dat %>%
+  bind_cols(preds) %>%
+  arrange(MeanTemp_CoralWatch)
+```
+
+```{r parsnip4-check}
+ls()
+```
+
+---
+
+```{r parsnip5, exercise=TRUE}
+p <- ggplot(pred_dat, aes(x = MeanTemp_CoralWatch, y = .pred)) +
+  geom_path() + geom_point(aes(y = AbundanceAdult40)) + 
+  theme_minimal()
+suppressMessages(print(p))
+```
+
+```{r parsnip5-check}
+ls()
+```
+
+---
+
+```{r parsnip6, exercise=TRUE}
+p <- ggplot(pred_dat, aes(x = MeanTemp_CoralWatch, y = .pred)) +
+  geom_path() + geom_point(aes(y = AbundanceAdult40)) + 
+  scale_y_continuous(trans = "log1p") + theme_minimal()
+suppressMessages(print(p))
+```
+
+```{r parsnip6-check}
+ls()
+```
+
+## The power of `parsnip`
+
+- Now that the model is specified in `parsnip`, it is easy to change our model to one that can model nonlinear relationships easily. Let's try doing a gradient boosted decision tree (you don't need to know what that is for now).
+
+```{r randforest1, exercise=TRUE}
+mod_pars2 <- boost_tree(mode = "regression") %>%
+  fit(AbundanceAdult40 ~ MeanTemp_CoralWatch,
+      data = fish_dat)
+mod_pars2
+```
+
+```{r randforest1-check}
+ls()
+```
+
+## The power of `parsnip`
+
+```{r randforest2, exercise=TRUE}
+preds2 <- predict(mod_pars2, fish_dat)
+pred_dat2 <- fish_dat %>%
+  bind_cols(preds2) %>%
+  arrange(MeanTemp_CoralWatch)
+```
+
+```{r randforest2-check}
+ls()
+```
+
+## The power of `parsnip`
+
+```{r randforest3, exercise=TRUE}
+p <- ggplot(pred_dat2, aes(x = MeanTemp_CoralWatch, y = .pred)) +
+  geom_path() + geom_point(aes(y = AbundanceAdult40)) + 
+  scale_y_continuous(trans = "log1p") + theme_minimal()
+suppressMessages(print(p))
+```
+
+```{r randforest3-check}
+ls()
+```
+
+## Forests of the Future or Forests of the Past?
+### Introducing the Pine Rocklands of South Florida
+
+- Unique to South Florida
+- Open canopy forests dominated by Slash Pine
+- One of the most critically endanger *ecosystems* in the world
+- Why?
+  - Pine Rocklands central range is in the middle of 
