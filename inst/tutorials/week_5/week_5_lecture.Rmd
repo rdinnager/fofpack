@@ -1,11 +1,40 @@
 ---
 title: "Week 5 Lecture: Introduction to Species Distribution Modelling (SDM)"
-output: 
+output:
   ioslides_presentation:
     widescreen: true
 runtime: shiny_prerendered
 description: Forests of the Future Practice Exam #1
 ---
+
+```{css echo=FALSE}
+@media print {
+  .topicsContainer,
+  .topicActions,
+  .exerciseActions .skip {
+    display: none;
+  }
+  .topics .tutorialTitle,
+  .topics .section.level2,
+  .topics .section.level3:not(.hide) {
+    display: block;
+  }
+  .topics {
+    width: 100%;
+  }
+  .tutorial-exercise, .tutorial-question {
+    page-break-inside: avoid;
+  }
+  .section.level3.done h3 {
+    padding-left: 0;
+    background-image: none;
+  }
+  .topics .showSkip .exerciseActions::before {
+    content: "Topic not yet completed...";
+    font-style: italic;
+  }
+}
+```
 
 ```{r setup_hide, include=FALSE}
 library(learnr)
@@ -83,24 +112,29 @@ Russell Dinnage
 > 3. Munge / Clean Data
 > 4. Transform Data for Model
 > 5. Analyze Data using Model
-> 6. Validate / Test Model
-> 7. Interpret Model
+> 6. Tune Model
+> 7. Validate / Test Model
+> 8. Interpret Model
 
 ## Data Science Steps
 
-1. A Question
+1. **A Question**
 2. **Collect Data**
 3. **Munge / Clean Data**
 4. Transform Data for Model
 5. Analyze Data using Model
-6. Validate / Test Model
-7. Interpret Model
+6. Tune Model
+7. Validate / Test Model
+8. Interpret Model
+
+- We have covered some of this already
+- We will cover the rest in the next 4 weeks
 
 ## What is a Model?
 
 - Encodes a relationship between a set of inputs and outputs
 - For an SDM this is a (potentially complex and nonlinear) function that takes environmental variables as input and  its output is an occurrence pattern (could be abundance, probability, suitability, etc.)
-- Different Models differ in their assumptions, or inductive biases, and their parameters
+- Different Models differ in their assumptions, or 'inductive biases', and their parameters
 - Models are 'fit' to data
   - Parameters are chosen based on how well the Model's output matches the real data
   - This is an optimization problem
@@ -111,7 +145,7 @@ Russell Dinnage
 
 - Models outputs as a 'linear' function of inputs
 - Inputs are 'predictor' variables
-- Outputs are predictions, and they are compare to 'response' variable(s)
+- Outputs are predictions, and they are compared to 'response' variable(s)
 - Assumes responses are a additive linear function of predictors
 
 ## Fit a Linear Model to Reef Fish Data
@@ -152,8 +186,9 @@ ls()
 
 - First let's choose a fish species to model
 - Thalassoma pavo: [Ornate Wrasse](https://www.fishbase.se/summary/Thalassoma-pavo.html)
+
 ```{r, out.width = "300px"}
-knitr::include_graphics("images/week_5_lecture_insertimage_1.png")
+knitr::include_graphics("images/week_5_lecture_insertimage_2.png")
 ```
 
 ```{r RF2, exercise=TRUE}
@@ -171,13 +206,32 @@ ls()
 - Let's do a linear model on our fish species with temperature as a predictor
 
 ```{r RF3, exercise=TRUE}
-mod <- lm(AbundanceAdult40 ~ MeanTemp_CoralWatch,
-          data = fish_dat)
+mod <- lm(
+  AbundanceAdult40 ~ MeanTemp_CoralWatch, 
+  data = fish_dat)
 ```
 
 ```{r RF3-check}
 ls()
 ```
+
+## R 'formulas'
+
+```{r form, echo=TRUE, eval=FALSE}
+mod <- lm(
+  ### <b>
+  AbundanceAdult40 ~ MeanTemp_CoralWatch, 
+  ### </b>
+  data = fish_dat)
+```
+
+- A formula is a special data structure in R
+- It is specified using an expression of this form: `lhs ~ rhs`, where `lhs` stands for Left Hand Side, and `rhs` stands for Right Hand Side. 
+- Formulas compactly express a relationship between variables: `lhs` contains 'response' variables that we wish to model as a function of the variables on the `rhs`: the 'predictor' variable
+- Both `lhs` and `rhs` can contain multiple variables and function calls (we will see examples of that later on)
+- Though a formula can be missing `lhs`, they must always have a `~` and a `rhs` (`~ rhs` is a valid formula)
+
+---
 
 ```{r RF4, exercise=TRUE}
 summary(mod)
@@ -221,10 +275,11 @@ Distribution of Abundance:
 - One way to 'fix' the data is to transform it, for example:
 
 ```{r abund_dist2,echo=TRUE}
- hist(log(fish_dat$AbundanceAdult40), breaks = 100)
+ hist(log(fish_dat$AbundanceAdult40), breaks = 50)
 ```
 
 ---
+
 However the main problem seems to stem from the fact that a line is not a good description on the response. Therefore, most SDM methods that are actually used allow for non-linear relationships. In this case (and many cases), some kind of hump shaped function might make sense.
 
 ```{r plotit}
@@ -259,7 +314,7 @@ ls()
 ## Fit a Linear Model with `parsnip`
 
 - A model is fit using the `fit()` function
-- `parsnip` is designed work with pipe operatoros (`%>%` or `|>`) 
+- `parsnip` is designed work with pipe operators (`%>%` or `|>`) 
 
 ```{r parsnip2, exercise=TRUE}
 mod_pars <- linear_reg(engine = "lm") %>%
@@ -290,11 +345,10 @@ ls()
 - Visualize the fit by prediction
 
 ```{r parsnip4, exercise=TRUE}
-preds <- predict(mod_pars, fish_dat)
+preds <- predict(mod_pars, newdata = fish_dat)
 preds
 pred_dat <- fish_dat %>%
-  bind_cols(preds) %>%
-  arrange(MeanTemp_CoralWatch)
+  bind_cols(preds)
 ```
 
 ```{r parsnip4-check}
@@ -305,7 +359,7 @@ ls()
 
 ```{r parsnip5, exercise=TRUE}
 p <- ggplot(pred_dat, aes(x = MeanTemp_CoralWatch, y = .pred)) +
-  geom_path() + geom_point(aes(y = AbundanceAdult40)) + 
+  geom_line() + geom_point(aes(y = AbundanceAdult40)) + 
   theme_minimal()
 suppressMessages(print(p))
 ```
@@ -318,7 +372,7 @@ ls()
 
 ```{r parsnip6, exercise=TRUE}
 p <- ggplot(pred_dat, aes(x = MeanTemp_CoralWatch, y = .pred)) +
-  geom_path() + geom_point(aes(y = AbundanceAdult40)) + 
+  geom_line() + geom_point(aes(y = AbundanceAdult40)) + 
   scale_y_continuous(trans = "log1p") + theme_minimal()
 suppressMessages(print(p))
 ```
@@ -345,10 +399,9 @@ ls()
 ## The power of `parsnip`
 
 ```{r randforest2, exercise=TRUE}
-preds2 <- predict(mod_pars2, fish_dat)
+preds2 <- predict(mod_pars2, newdata = fish_dat)
 pred_dat2 <- fish_dat %>%
-  bind_cols(preds2) %>%
-  arrange(MeanTemp_CoralWatch)
+  bind_cols(preds2) 
 ```
 
 ```{r randforest2-check}
@@ -359,7 +412,7 @@ ls()
 
 ```{r randforest3, exercise=TRUE}
 p <- ggplot(pred_dat2, aes(x = MeanTemp_CoralWatch, y = .pred)) +
-  geom_path() + geom_point(aes(y = AbundanceAdult40)) + 
+  geom_line() + geom_point(aes(y = AbundanceAdult40)) + 
   scale_y_continuous(trans = "log1p") + theme_minimal()
 suppressMessages(print(p))
 ```
@@ -368,6 +421,10 @@ suppressMessages(print(p))
 ls()
 ```
 
+## Overfitting
+
+An important concept in Data Science and Machine Learning is the idea of overfitting. The above model appears to 'overfit' the data -- its predictions jump around wildly to try and fit each individual data point. But this in not likely to generalize well if applied to a new dataset. We reduce overfitting by tuning the 'hyper-parameters' of the algorithm to make it produce 'smoother' predictions. Smoothed prediction are more likely to generalize better to new datasets. This is accomplished using a method called cross-validation, which we will cover in depth in Week 7.
+
 ## Forests of the Future or Forests of the Past?
 ### Introducing the Pine Rocklands of South Florida
 
@@ -375,4 +432,5 @@ ls()
 - Open canopy forests dominated by Slash Pine
 - One of the most critically endanger *ecosystems* in the world
 - Why?
-  - Pine Rocklands central range is in the middle of 
+  - Pine Rocklands central range is in the middle of Miami!
+  - The only large patch remaining is in Everglades National Park

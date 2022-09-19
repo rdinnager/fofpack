@@ -15,12 +15,15 @@ Imports:
     learnr (>= 0.10.6.9000),
     learnrhash (>= 0.2.0),
     lifecycle,
+    mapview,
     parsermd,
     rlang,
     rstudioapi,
     rvcheck,
     rvest,
-    stringr
+    sf,
+    stringr,
+    xgboost
 Depends: 
     R (>= 2.10),
     tidyverse

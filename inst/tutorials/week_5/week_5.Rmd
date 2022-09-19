@@ -2,16 +2,46 @@
 title: "Forests of the Future: Exam 1"
 output: 
   learnr::tutorial:
-    progressive: true
-    allow_skip: true
+    progressive: false
     language:
       en:
         button:
           runcode: Test Code
           submitanswer: Run Code
+          questionsubmit: Submit Answer
+          questiontryagain: Change my answer
 runtime: shiny_prerendered
 description: Forests of the Future Practice Exam #1
 ---
+
+```{css echo=FALSE}
+@media print {
+  .topicsContainer,
+  .topicActions,
+  .exerciseActions .skip {
+    display: none;
+  }
+  .topics .tutorialTitle,
+  .topics .section.level2,
+  .topics .section.level3:not(.hide) {
+    display: block;
+  }
+  .topics {
+    width: 100%;
+  }
+  .tutorial-exercise, .tutorial-question {
+    page-break-inside: avoid;
+  }
+  .section.level3.done h3 {
+    padding-left: 0;
+    background-image: none;
+  }
+  .topics .showSkip .exerciseActions::before {
+    content: "Topic not yet completed...";
+    font-style: italic;
+  }
+}
+```
 
 ```{r setup_hide, include=FALSE}
 library(learnr)
@@ -42,184 +72,289 @@ knitr::opts_chunk$set(echo = FALSE)
 
 ### Getting started with Species Distribution Modelling
 
-Species Distribution Modelling is fundamentally an exercise in predicting the occurrence or abundance of a species (or species`) using environmental variables and / or species traits. Collectively these 'predictor' variables are know as features.
+Species Distribution Modelling is fundamentally an exercise in predicting the occurrence or abundance of a species (or species`) using environmental variables and / or species traits. Collectively these 'predictor' variables are know as features in Machine Learning lingo.
 
 ### Setup
 
-```{r setup}
-rm(list = ls())
-library(tidyverse)
+```{r setup, include=FALSE}
 library(fofpack)
-data("NJ_Forest")
-REF_SPCD <- REF_SPCD %>%
-  mutate(Species = paste(Genus, Species))
+library(tidyverse)
+library(tidymodels)
+
+data("RF_abund")
 ```
 
-The following code loads the packages you will need for this exam, and the dataset you will be using (and clears the workspace). It also adds a column with the full 'binomial' species name of each species (made up of the Genus and Species epithets). The data is from the same dataset as `fl_forests`, but this time, it is data from the state of New Jersey, and the main data.frame object is called `nj_forests`. If you click 'Run Code' it will be run in RStudio, so you can view the environment browser, and access all of RStudio's features. 
+The following code loads the packages you will need for this assignment, and the dataset you will be using (and clears the workspace). You will be using a dataset on reef fishes from reefs around the world called `RF_abund`. Don't forget to always click 'Run Code' for each code box, which runs your code in RStudio, and allows you to access the results in later code boxes.
 
 ```{r do_setup, exercise=TRUE}
 rm(list = ls())
-library(tidyverse)
 library(fofpack)
-data("NJ_Forest")
-REF_SPCD <- REF_SPCD %>%
-  mutate(Species = paste(Genus, Species))
+library(tidyverse)
+library(tidymodels)
+
+data("RF_abund")
 ```
 
 ```{r do_setup-check}
 ls()
 ```
 
+Before we do anything else we will transform our abundance variable, because abundance usually has better properties for modelling when it is log-transformed. Note the `+ 1` below deals with values that are zero (log is undefined in this case).
+
+```{r do_setup2, exercise=TRUE}
+RF_abund <- RF_abund %>%
+  mutate(log_Abundance = log(AbundanceAdult40 + 1))
+```
+
+```{r do_setup2-check}
+ls()
+```
+
+
 Use the code boxes below each exercise and follow the directions.
 
-### Question 1
+## Exercise 1
 
-Using the code box below, please print out the column names of `nj_forests` and
-`REF_SPCD`. 
+Make a data.frame with 5 random fish species from `RF_abund`. Just fill in the blank.
 
-```{r q1, exercise=TRUE}
+```{r e1, exercise=TRUE}
+rand_fish <- RF_abund %>%
+  select(SpeciesName) %>%
+  slice_sample(n = ___)
 
-
-
-
-
+rand_fish
 ```
 
-```{r q1-check}
+```{r e1-check}
 ls()
 ```
 
-### Question 2
+Copy and paste one of the above species names into [Fishbase](https://www.fishbase.se/search.php), using the scientific name section (look for **Genus + Species**), it looks like this:
+![](images/week_5_insertimage_fish.png)
 
-Merge the data.frame `nj_forests` with `REF_FORTYPCD`, `REF_PHYSCLCD`, and `REF_SPCD`. Call this new data.frame `nj_forests_all` and use it to answer the next few questions.
+Have a look at some pictures and get to know your chosen species. You will model this species distribution across different temperatures.
 
-```{r q2, exercise=TRUE}
+```{r q1}
 
-
-
-
+question_text("What is the common name of your species? (Found under the scientific name on the species page).",
+              answer_fn(~ incorrect("Thank you for your answer!")),
+              incorrect = "Submitted.",
+              allow_retry = TRUE)
 
 ```
 
-```{r q2-check}
+Put the scientific name in a character object called `mysp`.
+
+```{r e1_2, exercise=TRUE}
+mysp <- "___"
+```
+
+```{r e1_2-check}
 ls()
 ```
 
-```{r nj_forests_all_setup}
-nj_forests_all <- nj_forests %>%
-  left_join(REF_FORTYPCD) %>%
-  left_join(REF_PHYSCLCD) %>%
-  left_join(REF_SPCD)
+## Exercise 2
+
+First filter the `RF_abund` dataframe to just your chosen species (`mysp`). Call it `mysp_dat`. Fill in the blank. As a reminder, here are the column names of `RF_abund`:
+
+```{r print_cols, echo=TRUE}
+names(RF_abund)
 ```
 
-
-### Question 3
-
-In the data.frame `nj_forests_all` convert SPCD,  FORTYPCD, and PHYSCLCD columns  
-from an integer type to a factor type. Use base r OR `tidyverse`.
-
-```{r q3, exercise=TRUE, exercise.setup='nj_forests_all_setup'}
-
-
-
-
-
+```{r e2, exercise=TRUE}
+mysp_dat <- RF_abund %>%
+  filter(___ == mysp)
 ```
 
-```{r q3-check}
+```{r e2-check}
 ls()
 ```
 
-<div id="q3-hint">
-**Hint:** Use the `as.factor()` function
-</div>
+Now plot `MeanTemp_CoralWatch` on the x axis, and `log_Abundance` on the y axis, using `ggplot2`
 
-### Question 4
-
-Starting with `nj_forests_all`, summarise the number of different species in each type (column `Type`) of forest using `group_by()` and `summarise()`.
-
-```{r q4, exercise=TRUE, exercise.setup='nj_forests_all_setup'}
-
-
-
-
-
+```{r e2_2, exercise=TRUE}
+ggplot(mysp_dat, aes(x = ___, y = ___)) + 
+  geom_point() +
+  theme_minimal()
 ```
 
-```{r q4-check}
+```{r e2_2-check}
 ls()
 ```
 
-<div id="q4-hint">
-**Hint:** Remember how to count the number of unique values in a vector (think about how to combine length() and unique())? Apply this to each `Type` using `group_by()` and `summarise()`.
-</div>
+## Exercise 3
 
-### Question 5
+Run a linear model to estimate how the species' abundance (`log_Abundance`) responds to mean temperature (`MeanTemp_CoralWatch`). Start by making a formula and assign it to an object called `form`. Then run the model using `tidymodels`, assigning the result to `mysp_mod`. The left hand side is the variable you want to predict (the response). The right hand side the variable you want to use to predict with (the predictor)
 
-Using `nj_forests_all` make a data.frame with the mean diameter (`DIA`) for each species. Call it `nj_forests_DIA`. *Bonus:* Add code that prints out the name or code of the species which has the highest average diameter.
+```{r e3, exercise=TRUE}
+form <- ___ ~ ___
 
-```{r q5, exercise=TRUE, exercise.setup='nj_forests_all_setup'}
-
-
-
-
-
+mysp_mod <- linear_reg() %>%
+  fit(form,
+      data = mysp_dat)
 ```
 
-```{r q5-check}
+```{r e3-check}
 ls()
 ```
 
-<div id="q5-hint">
-**Hint:** `group_by()`, `summarise()` is a classic combo. For the bonus the `dplyr` function `arrange()` might be useful or possibly the base R function `which.max()`?</div>
+Use the above model object to generate predictions for your species at each of the original data points. Assign this to an object called `mysp_preds`
 
-
-### Question 6
-
-Run the following code to generate a summary of mean diameter of each species in each Type of forest:
-
-```{r nj_forests_DIA_Type, exercise=TRUE, exercise.setup='nj_forests_all_setup'}
-nj_forests_DIA_Type <- nj_forests_all %>%
-  group_by(Type, SPCD) %>%
-  summarize(DIA_mean = mean(DIA, na.rm = TRUE))
+```{r e3_2, exercise=TRUE}
+mysp_preds <- 
 ```
 
-Using this summary `nj_forests_DIA_Type` (which should be available in the code box below once you click 'Run Code' above), plot mean diameter (`DIA_mean`) on the y axis vs the type of forests (`Type`) on the x axis (using ggplot2). 
-
-```{r q6, exercise=TRUE, exercise.setup='nj_forests_all_setup'}
-
-
-
-
-
-```
-
-```{r q6-check}
+```{r e3_2-check}
 ls()
 ```
 
-<div id="q6-hint">
-**Hint:** `geom_point()`
-</div>
-
-### Bonus Question
-
-Using ggplot2, plot a visual summary of mean heights for each `Type` of forest in `nj_forests_DIA_Type`.
-
-```{r qbonus, exercise=TRUE, exercise.setup='nj_forests_all_setup'}
-
-
-
-
-
+```{r e3_2-hint}
+predict(mysp_mod, mysp_dat)
 ```
 
-```{r qbonus-check}
+Run the following code to bind your predictions to the original data:
+
+```{r e3_3, exercise=TRUE}
+mysp_dat_preds <- mysp_dat %>%
+  bind_cols(mysp_preds)
+
+mysp_dat_preds
+```
+
+```{r e3_3-check}
 ls()
 ```
 
-<div id="qbonus-hint">
-**Hint:** Start with your code from Question 6. There are a number of geoms designed to visually summarize distributions of values in `ggplot2`. Try looking at `geom_boxplot()` or `geom_violin()`. The examples in the documentation might help you figure out how to use them. Don't forget to plot you data as points too, so you can see how the visual summary relates to them (also make sure the points are not covered, in other words, pay attention to the order of your `ggplot2` layers).
+Use the `mysp_dat_pred` to plot the model predictions alongside the observed data. Replace the blank with the correct `ggplot2` code to plot the predictions.
+
+```{r e3_4, exercise=TRUE}
+ggplot(mysp_dat_preds, aes(MeanTemp_CoralWatch, log_Abundance)) +
+  ___ +
+  geom_point() +
+  theme_minimal()
+```
+
+```{r e3_4-check}
+ls()
+```
+
+## Just for fun
+
+This section is not for marks, but shows you some more advanced stuff you can do for modelling your species. The section after this has a bonus exercise if you want to try something a bit harder for bonus marks!
+
+The linear model probably didn't fit your species' data very well (but it is possible that it did!). It is usually more effective to model species abundances as a nonlinear function of the environment. There are many advanced machine learning algorithms devoted to complex nonlinear function fitting, but did you know you can model nonlinear relationships with the linear model? It sounds counterintuitive, but it works by creating new synthetic variables, that, when added each in a linear fashion, combine to produce a nonlinear global relationship. This can be achieved in R using the `poly()` function, which creates 'polynomial' variables. For a single variable it produces new variables based on the original variable raised to multiple powers (and then made *'orthogonal'*).
+
+Let's try it! Run the code below to run a 'polynomial' regression on your species:
+
+
+```{r fun, exercise=TRUE}
+form_poly <- log_Abundance ~ poly(MeanTemp_CoralWatch, degree = 3)
+
+mysp_mod_poly <- linear_reg() %>%
+  fit(form_poly,
+      data = mysp_dat)
+
+tidy(mysp_mod_poly)
+```
+
+```{r fun-check}
+ls()
+```
+
+Now run the following to make a plot of the predictions. Here we predict on a sequence of predictor values to make a smooth prediction line across the full range of predictor values.
+
+```{r fun2, exercise=TRUE}
+pred_dat <- tibble(MeanTemp_CoralWatch = seq(min(mysp_dat$MeanTemp_CoralWatch),
+                                             max(mysp_dat$MeanTemp_CoralWatch),
+                                             length.out = 1000)) %>%
+  bind_cols(predict(mysp_mod_poly, .))
+
+ggplot(pred_dat, aes(MeanTemp_CoralWatch, .pred)) +
+  geom_point(aes(y = log_Abundance), data = mysp_dat) +
+  geom_line() +
+  theme_minimal()
+```
+
+```{r fun2-check}
+ls()
+```
+
+How does the fit compare to your original linear model?
+
+## Advanced Bonus Exercise
+
+The following exercise is for those who want to try something more advanced for a bonus 2 marks.
+First we run a model with *two* variables instead of one.
+
+```{r b1, exercise=TRUE}
+## Note the * means to 'cross' the variables, which means put their individual effects in the model
+## plus an 'interaction' between them.
+form_2 <- log_Abundance ~ MeanTemp_CoralWatch * Depth_Site
+
+mysp_mod_2 <- linear_reg() %>%
+  fit(form_2,
+      data = mysp_dat)
+
+tidy(mysp_mod_2)
+```
+
+```{r b1-check}
+ls()
+```
+
+We can plot the original data points for the two predictors, and then plot the third dimension (the response, in this case abundance) using size. The below code does that.
+
+```{r b2, exercise=TRUE}
+ggplot(mysp_dat, aes(MeanTemp_CoralWatch, Depth_Site)) +
+  geom_point(aes(size = log_Abundance)) +
+  scale_size_area() +
+  theme_minimal()
+```
+
+```{r b2-check}
+ls()
+```
+
+Now we can make a new dataframe with a 'grid' of predictor values to make prediction on. This uses `cross_df` from `tidyverse` which 'crosses' two vector with each other, making all combinations.
+
+```{r b3, exercise=TRUE}
+pred_dat_2 <- cross_df(list(MeanTemp_CoralWatch = seq(min(mysp_dat$MeanTemp_CoralWatch),
+                                                      max(mysp_dat$MeanTemp_CoralWatch),
+                                                      length.out = 100),
+                            Depth_Site = seq(min(mysp_dat$Depth_Site),
+                                             max(mysp_dat$Depth_Site),
+                                             length.out = 100)))
+
+pred_dat_2
+```
+
+```{r b3-check}
+ls()
+```
+
+Use the `pred_dat_2` dataframe to generate predictions from the model at each predictor grid point and then bind the prediction back to the `pred_dat_2` dataframe. Then use this to plot the predictions along with the data.
+
+```{r b4, exercise=TRUE}
+
+
+
+```
+
+```{r b4-check}
+ls()
+```
+
+<div id="b4-hint">
+**Hint:** After binding the predictions back to `pred_dat_2`, for the plot use:
+```
+ggplot(pred_dat_2, aes(MeanTemp_CoralWatch, Depth_Site)) +
+  ___ +
+  geom_point(aes(size = log_Abundance), data = mysp_dat) +
+  scale_size_area() +
+  theme_minimal()
+```
+
+Replace the `___` with `geom_contour_filled()` or `geom_tile()`. Look at the documentation to see how they work (or Google them if you prefer). You will have to map the `.pred` variable to an aesthetic within it.
 </div>
 
 ## Submit
