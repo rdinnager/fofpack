@@ -1,5 +1,5 @@
 ---
-title: "Forests of the Future: Exam 1"
+title: "Forests of the Future: Week 5 Assignment"
 output: 
   learnr::tutorial:
     progressive: false
@@ -11,7 +11,7 @@ output:
           questionsubmit: Submit Answer
           questiontryagain: Change my answer
 runtime: shiny_prerendered
-description: Forests of the Future Practice Exam #1
+description: Forests of the Future Week 5 Assignment
 ---
 
 ```{css echo=FALSE}
