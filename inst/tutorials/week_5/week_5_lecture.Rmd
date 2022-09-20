@@ -429,18 +429,56 @@ An important concept in Data Science and Machine Learning is the idea of overfit
 ### Introducing the Pine Rocklands of South Florida
 
 - Unique to South Florida
+- High species diversity
 - Open canopy forests dominated by Slash Pine
+- Fire dependent ecosystem
 - One of the most critically endanger *ecosystems* in the world
 - Why?
   - Pine Rocklands central range is in the middle of Miami!
   - The only large patch remaining is in Everglades National Park
   
-## Map of Current and Historical Rock Pineland
+---
 
-![](week_5_lecture_insertimage_1.png)
+```{r, out.width = "800px"}
+knitr::include_graphics("images/pine_rockland_map.jpg")
+```
+
+---
+Image citation:
+
+Trotta, Lauren B., et al. "Community phylogeny of the globally critically imperiled pine rockland ecosystem." American journal of botany 105.10 (2018): 1735-1747.
+
+
+## FIU's Pine Rockland
+
+- The [FIU Preserve](https://sustainability.fiu.edu/the-fiu-nature-preserve/) on campus has one of the few remaining patches of Pine Rockland in Miami-Dade
+- In 2016 FIU conducted a prescribed burn to help restore this ecosystem of local importance
+
+<iframe src="https://www.youtube.com/embed/YhwmIwczW6c" data-external= "1"> </iframe>
   
 ## Project Proposal   
 
-- I propose we do one big group project on the Pine Rocklands
-- 
+- I propose we do one big group project on the Pine Rocklands in weeks 11-16
+- We will start here in lecture -- I will use data on plants in the Pine Rockland for my examples in the next few weeks.
+- For the final project, each of you can choose a species from the Pine Rocklands (or a few species) to run a SDM on and use it to make predictions. What is the past and future of Pine Rockland species?
+- You will all follow the same steps of good Data Science
+- You can work in groups or on your own, it is your decision
+- At the end of the semester we will combine everyone's SDMs into a prediction for the whole Pine Rockland community (or at least 18-30 species worth)
+
+--- 
+
+We will start by extracting data from this:
+
+```{r, out.width = "850px"}
+knitr::include_graphics("images/floristic.png")
+```
+
+--- 
+
+- I will start using that data for example in class next week.
+- Next class we will be working on the Week 5 Assignment (you can start today).
+- Next week we will cover:
+  - How to go from abundance data to presence / absence (e.g. occurrences)
+  - How to include data preprocessing and model fitting in one workflow using `tidymodels`
+  - A little bit of ecological niche theory to understand what SDMs represent and why they are important
 
