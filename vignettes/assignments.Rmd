@@ -36,7 +36,7 @@ Once `devtools` is installed, then you can run the following:
 
 ```{r install_fofpack}
 library(devtools)
-install_github("rdinnager/fofpack", dependencies = TRUE, upgrade = TRUE, force = TRUE)
+install_github("rdinnager/fofpack", dependencies = TRUE, upgrade = TRUE)
 ```
 
 Note that if `devtools` has not been installed properly then `library(devtools)`
