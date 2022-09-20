@@ -4,7 +4,7 @@ output:
   ioslides_presentation:
     widescreen: true
 runtime: shiny_prerendered
-description: Forests of the Future Practice Exam #1
+description: Forests of the Future Week 5 Lecture 
 ---
 
 ```{css echo=FALSE}
@@ -444,6 +444,7 @@ knitr::include_graphics("images/pine_rockland_map.jpg")
 ```
 
 ---
+
 Image citation:
 
 Trotta, Lauren B., et al. "Community phylogeny of the globally critically imperiled pine rockland ecosystem." American journal of botany 105.10 (2018): 1735-1747.
@@ -465,7 +466,7 @@ Trotta, Lauren B., et al. "Community phylogeny of the globally critically imperi
 - You can work in groups or on your own, it is your decision
 - At the end of the semester we will combine everyone's SDMs into a prediction for the whole Pine Rockland community (or at least 18-30 species worth)
 
---- 
+---
 
 We will start by extracting data from this:
 
@@ -473,7 +474,7 @@ We will start by extracting data from this:
 knitr::include_graphics("images/floristic.png")
 ```
 
---- 
+---
 
 - I will start using that data for example in class next week.
 - Next class we will be working on the Week 5 Assignment (you can start today).
