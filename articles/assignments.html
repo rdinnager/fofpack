@@ -26,7 +26,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">fofpack</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.0.9005</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.0.9006</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -88,7 +88,7 @@
 <span><span class="co">#&gt; Using github PAT from envvar GITHUB_PAT</span></span>
 <span><span class="co">#&gt; Downloading GitHub repo rdinnager/fofpack@HEAD</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; * checking for file ‘/tmp/RtmpNUimrr/remotes3887221d210f/rdinnager-fofpack-bb6b078/DESCRIPTION’ ... OK</span></span>
+<span><span class="co">#&gt; * checking for file ‘/tmp/RtmpJQUSR3/remotes3af0322f94f/rdinnager-fofpack-d6a3138/DESCRIPTION’ ... OK</span></span>
 <span><span class="co">#&gt; * preparing ‘fofpack’:</span></span>
 <span><span class="co">#&gt; * checking DESCRIPTION meta-information ... OK</span></span>
 <span><span class="co">#&gt; * checking for LF line-endings in source and make files and shell scripts</span></span>
@@ -99,7 +99,7 @@
 <span><span class="co">#&gt;   File(s) containing such objects:</span></span>
 <span><span class="co">#&gt;     ‘fofpack/data/FL_Forest.rda’ ‘fofpack/data/NJ_Forest.rda’</span></span>
 <span><span class="co">#&gt;     ‘fofpack/data/Week3_FloridaForest.rda’</span></span>
-<span><span class="co">#&gt; * building ‘fofpack_0.0.0.9005.tar.gz’</span></span>
+<span><span class="co">#&gt; * building ‘fofpack_0.0.0.9006.tar.gz’</span></span>
 <span><span class="co">#&gt; Installing package into '/home/runner/work/_temp/Library'</span></span>
 <span><span class="co">#&gt; (as 'lib' is unspecified)</span></span></code></pre></div>
 <p>Note that if <code>devtools</code> has not been installed properly then <code><a href="https://devtools.r-lib.org/" class="external-link">library(devtools)</a></code> will fail with an error. If this is the case, try installing <code>devtools</code> again. <code>dependencies = TRUE</code> and <code>upgrade = TRUE</code> should force the installation or upgrading of any package dependencies of <code>fofpack</code>, so you should not have to install dependencies manually. The output of the above command will depend on what package you have installed already.</p>
@@ -113,15 +113,34 @@
 <p><strong>###Important</strong>: To make sure <code>fofpack</code> has successfully been updated to the latest version run:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://rdinnager.github.io/fofpack/">fofpack</a></span><span class="op">)</span></span>
+<span><span class="co">#&gt; Loading required package: tidymodels</span></span>
+<span><span class="co">#&gt; ── <span style="font-weight: bold;">Attaching packages</span> ────────────────────────────────────── tidymodels 1.0.0 ──</span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> <span style="color: #0000BB;">broom       </span> 1.0.1      <span style="color: #00BB00;">✔</span> <span style="color: #0000BB;">recipes     </span> 1.0.1 </span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> <span style="color: #0000BB;">dials       </span> 1.0.0      <span style="color: #00BB00;">✔</span> <span style="color: #0000BB;">rsample     </span> 1.1.0 </span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> <span style="color: #0000BB;">dplyr       </span> 1.0.10     <span style="color: #00BB00;">✔</span> <span style="color: #0000BB;">tibble      </span> 3.1.8 </span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> <span style="color: #0000BB;">ggplot2     </span> 3.3.6      <span style="color: #00BB00;">✔</span> <span style="color: #0000BB;">tidyr       </span> 1.2.1 </span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> <span style="color: #0000BB;">infer       </span> 1.0.3      <span style="color: #00BB00;">✔</span> <span style="color: #0000BB;">tune        </span> 1.0.0 </span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> <span style="color: #0000BB;">modeldata   </span> 1.0.1      <span style="color: #00BB00;">✔</span> <span style="color: #0000BB;">workflows   </span> 1.0.0 </span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> <span style="color: #0000BB;">parsnip     </span> 1.0.1      <span style="color: #00BB00;">✔</span> <span style="color: #0000BB;">workflowsets</span> 1.0.0 </span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> <span style="color: #0000BB;">purrr       </span> 0.3.4      <span style="color: #00BB00;">✔</span> <span style="color: #0000BB;">yardstick   </span> 1.1.0</span></span>
+<span><span class="co">#&gt; ── <span style="font-weight: bold;">Conflicts</span> ───────────────────────────────────────── tidymodels_conflicts() ──</span></span>
+<span><span class="co">#&gt; <span style="color: #BB0000;">✖</span> <span style="color: #0000BB;">recipes</span>::<span style="color: #00BB00;">check()</span> masks <span style="color: #0000BB;">devtools</span>::check()</span></span>
+<span><span class="co">#&gt; <span style="color: #BB0000;">✖</span> <span style="color: #0000BB;">purrr</span>::<span style="color: #00BB00;">discard()</span> masks <span style="color: #0000BB;">scales</span>::discard()</span></span>
+<span><span class="co">#&gt; <span style="color: #BB0000;">✖</span> <span style="color: #0000BB;">dplyr</span>::<span style="color: #00BB00;">filter()</span>  masks <span style="color: #0000BB;">stats</span>::filter()</span></span>
+<span><span class="co">#&gt; <span style="color: #BB0000;">✖</span> <span style="color: #0000BB;">dplyr</span>::<span style="color: #00BB00;">lag()</span>     masks <span style="color: #0000BB;">stats</span>::lag()</span></span>
+<span><span class="co">#&gt; <span style="color: #BB0000;">✖</span> <span style="color: #0000BB;">recipes</span>::<span style="color: #00BB00;">step()</span>  masks <span style="color: #0000BB;">stats</span>::step()</span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">•</span> Learn how to get started at <span style="color: #00BB00;">https://www.tidymodels.org/start/</span></span></span>
 <span><span class="co">#&gt; Loading required package: tidyverse</span></span>
 <span><span class="co">#&gt; ── <span style="font-weight: bold;">Attaching packages</span> ─────────────────────────────────────── tidyverse 1.3.2 ──</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> <span style="color: #0000BB;">ggplot2</span> 3.3.6      <span style="color: #00BB00;">✔</span> <span style="color: #0000BB;">purrr  </span> 0.3.4 </span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> <span style="color: #0000BB;">tibble </span> 3.1.8      <span style="color: #00BB00;">✔</span> <span style="color: #0000BB;">dplyr  </span> 1.0.10</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> <span style="color: #0000BB;">tidyr  </span> 1.2.1      <span style="color: #00BB00;">✔</span> <span style="color: #0000BB;">stringr</span> 1.4.1 </span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> <span style="color: #0000BB;">readr  </span> 2.1.2      <span style="color: #00BB00;">✔</span> <span style="color: #0000BB;">forcats</span> 0.5.2 </span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> <span style="color: #0000BB;">readr  </span> 2.1.2     <span style="color: #00BB00;">✔</span> <span style="color: #0000BB;">forcats</span> 0.5.2</span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> <span style="color: #0000BB;">stringr</span> 1.4.1     </span></span>
 <span><span class="co">#&gt; ── <span style="font-weight: bold;">Conflicts</span> ────────────────────────────────────────── tidyverse_conflicts() ──</span></span>
-<span><span class="co">#&gt; <span style="color: #BB0000;">✖</span> <span style="color: #0000BB;">dplyr</span>::<span style="color: #00BB00;">filter()</span> masks <span style="color: #0000BB;">stats</span>::filter()</span></span>
-<span><span class="co">#&gt; <span style="color: #BB0000;">✖</span> <span style="color: #0000BB;">dplyr</span>::<span style="color: #00BB00;">lag()</span>    masks <span style="color: #0000BB;">stats</span>::lag()</span></span>
+<span><span class="co">#&gt; <span style="color: #BB0000;">✖</span> <span style="color: #0000BB;">readr</span>::<span style="color: #00BB00;">col_factor()</span> masks <span style="color: #0000BB;">scales</span>::col_factor()</span></span>
+<span><span class="co">#&gt; <span style="color: #BB0000;">✖</span> <span style="color: #0000BB;">purrr</span>::<span style="color: #00BB00;">discard()</span>    masks <span style="color: #0000BB;">scales</span>::discard()</span></span>
+<span><span class="co">#&gt; <span style="color: #BB0000;">✖</span> <span style="color: #0000BB;">dplyr</span>::<span style="color: #00BB00;">filter()</span>     masks <span style="color: #0000BB;">stats</span>::filter()</span></span>
+<span><span class="co">#&gt; <span style="color: #BB0000;">✖</span> <span style="color: #0000BB;">stringr</span>::<span style="color: #00BB00;">fixed()</span>    masks <span style="color: #0000BB;">recipes</span>::fixed()</span></span>
+<span><span class="co">#&gt; <span style="color: #BB0000;">✖</span> <span style="color: #0000BB;">dplyr</span>::<span style="color: #00BB00;">lag()</span>        masks <span style="color: #0000BB;">stats</span>::lag()</span></span>
+<span><span class="co">#&gt; <span style="color: #BB0000;">✖</span> <span style="color: #0000BB;">readr</span>::<span style="color: #00BB00;">spec()</span>       masks <span style="color: #0000BB;">yardstick</span>::spec()</span></span>
 <span><span class="fu"><a href="../reference/fofpack_up_to_date.html">fofpack_up_to_date</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; package is up-to-date devel version</span></span>
 <span><span class="co">#&gt; package is up-to-date devel version</span></span>
