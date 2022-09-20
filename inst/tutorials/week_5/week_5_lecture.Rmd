@@ -434,3 +434,13 @@ An important concept in Data Science and Machine Learning is the idea of overfit
 - Why?
   - Pine Rocklands central range is in the middle of Miami!
   - The only large patch remaining is in Everglades National Park
+  
+## Map of Current and Historical Rock Pineland
+
+![](week_5_lecture_insertimage_1.png)
+  
+## Project Proposal   
+
+- I propose we do one big group project on the Pine Rocklands
+- 
+

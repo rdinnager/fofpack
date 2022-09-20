@@ -56,6 +56,10 @@ custom_checker <- function(label, user_code, check_code, envir_result, evaluate_
     rstudioapi::sendToConsole(user_code, focus = TRUE)
     
     fofpack::set_env(envir_result)
+    
+    try(save.image(file.path(system.file(package = "fofpack"), "week_5_progress.Rdata"),
+               safe = FALSE),
+        silent = TRUE)
 
     list(message = "Code Run; Results Now Available in RStudio.", correct = TRUE, type = "success", location = "append")
     
@@ -82,6 +86,11 @@ library(tidyverse)
 library(tidymodels)
 
 data("RF_abund")
+
+progress <- file.path(system.file(package = "fofpack"), "week_5_progress.Rdata")
+if(file.exists(progress)) {
+  load(progress, envir = rlang::global_env())
+}
 ```
 
 The following code loads the packages you will need for this assignment, and the dataset you will be using (and clears the workspace). You will be using a dataset on reef fishes from reefs around the world called `RF_abund`. Don't forget to always click 'Run Code' for each code box, which runs your code in RStudio, and allows you to access the results in later code boxes.
@@ -192,6 +201,8 @@ form <- ___ ~ ___
 mysp_mod <- linear_reg() %>%
   fit(form,
       data = mysp_dat)
+
+tidy(mysp_mod)
 ```
 
 ```{r e3-check}
@@ -272,6 +283,13 @@ pred_dat <- tibble(MeanTemp_CoralWatch = seq(min(mysp_dat$MeanTemp_CoralWatch),
 ggplot(pred_dat, aes(MeanTemp_CoralWatch, .pred)) +
   geom_point(aes(y = log_Abundance), data = mysp_dat) +
   geom_line() +
+  ylim(c(0, NA)) +
+  theme_minimal()
+
+## plot just the predictions to see the curve easier:
+ggplot(pred_dat, aes(MeanTemp_CoralWatch, .pred)) +
+  geom_line() +
+  ylim(c(0, NA)) +
   theme_minimal()
 ```
 
