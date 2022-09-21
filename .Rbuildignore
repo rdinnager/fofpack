@@ -9,3 +9,4 @@
 ^inst\temp$
 ^data-raw$
 ^extdata$
+^lectures$
