@@ -21,7 +21,6 @@ Imports:
     rstudioapi,
     rvcheck,
     rvest,
-    sf,
     stringr,
     xgboost
 Depends: 
