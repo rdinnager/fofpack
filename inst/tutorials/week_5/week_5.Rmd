@@ -67,7 +67,8 @@ custom_checker <- function(label, user_code, check_code, envir_result, evaluate_
 
 }
 
-tutorial_options(exercise.checker = custom_checker)
+tutorial_options(exercise.checker = custom_checker,
+                 exercise.timelimit = 300)
 
 knitr::opts_chunk$set(echo = FALSE)
 ```
