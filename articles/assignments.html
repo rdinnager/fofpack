@@ -88,7 +88,7 @@
 <span><span class="co">#&gt; Using github PAT from envvar GITHUB_PAT</span></span>
 <span><span class="co">#&gt; Downloading GitHub repo rdinnager/fofpack@HEAD</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; * checking for file ‘/tmp/RtmpBLcgs3/remotes39703e10f947/rdinnager-fofpack-a95332a/DESCRIPTION’ ... OK</span></span>
+<span><span class="co">#&gt; * checking for file ‘/tmp/RtmpcmE1Mq/remotes392664314147/rdinnager-fofpack-d7cea14/DESCRIPTION’ ... OK</span></span>
 <span><span class="co">#&gt; * preparing ‘fofpack’:</span></span>
 <span><span class="co">#&gt; * checking DESCRIPTION meta-information ... OK</span></span>
 <span><span class="co">#&gt; * checking for LF line-endings in source and make files and shell scripts</span></span>
@@ -100,6 +100,14 @@
 <span><span class="co">#&gt;     ‘fofpack/data/FL_Forest.rda’ ‘fofpack/data/NJ_Forest.rda’</span></span>
 <span><span class="co">#&gt;     ‘fofpack/data/Week3_FloridaForest.rda’</span></span>
 <span><span class="co">#&gt; * building ‘fofpack_0.0.0.9007.tar.gz’</span></span>
+<span><span class="co">#&gt; Warning in utils::tar(filepath, pkgname, compression = compression, compression_level = 9L,  :</span></span>
+<span><span class="co">#&gt;   storing paths of more than 100 bytes is not portable:</span></span>
+<span><span class="co">#&gt;   ‘fofpack/inst/tutorials/week_6_lecture/images/2022-09-23 15_09_30-Week 5 Lecture Introduction to Species Distribution Modelling (SDM).pdf - Work -.png’</span></span>
+<span><span class="co">#&gt; Warning in utils::tar(filepath, pkgname, compression = compression, compression_level = 9L,  :</span></span>
+<span><span class="co">#&gt;   storing paths of more than 100 bytes is not portable:</span></span>
+<span><span class="co">#&gt;   ‘fofpack/inst/tutorials/week_6_lecture/images/A+single+niche+axis+e.g.,+pH,+temperature,+or+soil+moisture.jpg’</span></span>
+<span><span class="co">#&gt; Warning in utils::tar(filepath, pkgname, compression = compression, compression_level = 9L,  :</span></span>
+<span><span class="co">#&gt;   using GNU extension for long pathname</span></span>
 <span><span class="co">#&gt; Installing package into '/home/runner/work/_temp/Library'</span></span>
 <span><span class="co">#&gt; (as 'lib' is unspecified)</span></span></code></pre></div>
 <p>Note that if <code>devtools</code> has not been installed properly then <code><a href="https://devtools.r-lib.org/" class="external-link">library(devtools)</a></code> will fail with an error. If this is the case, try installing <code>devtools</code> again. <code>dependencies = TRUE</code> and <code>upgrade = TRUE</code> should force the installation or upgrading of any package dependencies of <code>fofpack</code>, so you should not have to install dependencies manually. The output of the above command will depend on what package you have installed already.</p>
@@ -129,7 +137,7 @@
 <span><span class="co">#&gt; <span style="color: #BB0000;">✖</span> <span style="color: #0000BB;">dplyr</span>::<span style="color: #00BB00;">filter()</span>  masks <span style="color: #0000BB;">stats</span>::filter()</span></span>
 <span><span class="co">#&gt; <span style="color: #BB0000;">✖</span> <span style="color: #0000BB;">dplyr</span>::<span style="color: #00BB00;">lag()</span>     masks <span style="color: #0000BB;">stats</span>::lag()</span></span>
 <span><span class="co">#&gt; <span style="color: #BB0000;">✖</span> <span style="color: #0000BB;">recipes</span>::<span style="color: #00BB00;">step()</span>  masks <span style="color: #0000BB;">stats</span>::step()</span></span>
-<span><span class="co">#&gt; <span style="color: #0000BB;">•</span> Search for functions across packages at <span style="color: #00BB00;">https://www.tidymodels.org/find/</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">•</span> Dig deeper into tidy modeling with R at <span style="color: #00BB00;">https://www.tmwr.org</span></span></span>
 <span><span class="co">#&gt; Loading required package: tidyverse</span></span>
 <span><span class="co">#&gt; ── <span style="font-weight: bold;">Attaching packages</span> ─────────────────────────────────────── tidyverse 1.3.2 ──</span></span>
 <span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> <span style="color: #0000BB;">readr  </span> 2.1.2     <span style="color: #00BB00;">✔</span> <span style="color: #0000BB;">forcats</span> 0.5.2</span></span>
