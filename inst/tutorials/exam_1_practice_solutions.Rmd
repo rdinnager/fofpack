@@ -1,0 +1,393 @@
+---
+title: "Forests of the Future: Exam 1 Practice"
+output: 
+  learnr::tutorial:
+    progressive: true
+    allow_skip: true
+    language:
+      en:
+        button:
+          runcode: Test Code
+          submitanswer: Run Code
+runtime: shiny_prerendered
+description: Forests of the Future Practice Exam #1
+---
+
+```{r setup_hide, include=FALSE}
+library(learnr)
+library(fofpack)
+
+custom_checker <- function(label, user_code, check_code, envir_result, evaluate_result, envir_prep, last_value, stage, ...) {
+  # this is a code check
+  if(stage == "check") {
+    
+    fofpack::send_env_to_RStudio(envir_prep)
+    
+    rstudioapi::sendToConsole(user_code, focus = TRUE)
+    
+    fofpack::set_env(envir_result)
+
+    list(message = "Code Run; Results Now Available in RStudio.", correct = TRUE, type = "success", location = "append")
+    
+  }
+
+}
+
+tutorial_options(exercise.checker = custom_checker)
+
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+
+```{r setup}
+rm(list = ls())
+library(tidyverse)
+library(fofpack)
+data("Week3_FloridaForest")
+REF_SPCD <- REF_SPCD %>%
+  mutate(Species = paste(Genus, Species))
+```
+
+The following code loads the packages you will need for this exam, and the dataset you will be using (and clears the workspace). It also adds a column with the full 'binomial' species name of each species (made up of the Genus and Species epithets). The dataset is the same you used for your week 3 assignment, with data on forest trees in Florida. If you click 'Run Code' it will be run in RStudio, so you can view the environment browser, and access all of RStudio's
+features. 
+
+```{r do_setup, exercise=TRUE}
+rm(list = ls())
+library(tidyverse)
+library(fofpack)
+data("Week3_FloridaForest")
+REF_SPCD <- REF_SPCD %>%
+  mutate(Species = paste(Genus, Species))
+```
+
+```{r do_setup-check}
+ls()
+```
+
+## Forests of the Future Exam 1 {data-progressive=TRUE}
+
+Use the code boxes below each exercise to follow the directions.
+
+### Question 1
+
+Using the code box below, please print out the column names of `fl_forests` and
+`REF_SPCD`. 
+
+```{r q1, exercise=TRUE}
+
+
+
+
+
+```
+
+```{r q1-check}
+ls()
+```
+
+```{r q1-solution}
+names(fl_forests)
+names(REF_SPCD)
+```
+
+### Question 2
+
+Assign the name of the column shared between `fl_forests` and 
+`REF_SPCD` to an object called `cc`, then print it.
+
+```{r q2, exercise=TRUE}
+
+
+
+
+
+```
+
+```{r q2-solution}
+cc <- "SPCD"
+cc
+
+## fancier solution:
+cc <- intersect(names(fl_forests), names(REF_SPCD))
+cc
+```
+
+```{r q2-check}
+ls()
+```
+
+### Question 3
+
+Merge the data.frame `fl_forests` with `REF_FORTYPCD`, `REF_PHYSCLCD`, and `REF_SPCD`. 
+Call this new data.frame `fl_forests_all` and use it to answer the next few questions.
+
+```{r q3, exercise=TRUE}
+
+
+
+
+
+```
+
+```{r q3-solution}
+fl_forests_all <- fl_forests %>%
+  left_join(REF_FORTYPCD) %>%
+  left_join(REF_PHYSCLCD) %>%
+  left_join(REF_SPCD)
+
+## another more verbose way:
+df1 <- fl_forests %>%
+  left_join(REF_FORTYPCD)
+df2 <- df1 %>%
+  left_join(REF_PHYSCLCD)
+fl_forests_all <- df2 %>%
+  left_join(REF_SPCD)
+```
+
+```{r q3-check}
+ls()
+```
+
+```{r fl_forests_all_setup}
+fl_forests_all <- fl_forests %>%
+  left_join(REF_FORTYPCD) %>%
+  left_join(REF_PHYSCLCD) %>%
+  left_join(REF_SPCD)
+```
+
+
+### Question 4
+
+In the data.frame `fl_forests_all` convert SPCD,  FORTYPCD, and PHYSCLCD columns  
+from an integer type to a factor type. Use base r OR `tidyverse`.
+
+```{r q4, exercise=TRUE, exercise.setup='fl_forests_all_setup'}
+
+
+
+
+
+```
+
+```{r q4-solution}
+fl_forests_all$SPCD <- as.factor(fl_forests_all$SPCD)
+fl_forests_all$FORTYPCD <- as.factor(fl_forests_all$FORTYPCD)
+fl_forests_all$PHYSCLCD <- as.factor(fl_forests_all$PHYSCLCD)
+
+## or the tidyverse solution
+fl_forests_all <- fl_forests_all %>%
+  mutate(SPCD = as.factor(SPCD),
+         FORTYPCD = as.factor(FORTYPCD),
+         PHYSCLCD = as.factor(PHYSCLCD))
+```
+
+```{r q4-check}
+ls()
+```
+
+### Question 5
+
+How many tree species are there in the `fl_forests_all` dataset?
+
+
+```{r q5, exercise=TRUE, exercise.setup='fl_forests_all_setup'}
+
+
+
+
+
+```
+
+```{r q5-solution}
+length(unique(fl_forests_all$SPCD))
+## or:
+n_distinct(fl_forests_all$SPCD)
+```
+
+```{r q5-check}
+ls()
+```
+
+### Question 6
+
+Summarise the number of different species in each type (column `Type`) of 
+forest using `group_by()` and `summarise`.
+
+```{r q6, exercise=TRUE, exercise.setup='fl_forests_all_setup'}
+
+
+
+
+
+```
+
+```{r q6-solution}
+## note: the hint in the original was misleading
+## in reality the solution is an extension of the
+## solution to question 5
+fl_forests_all %>%
+  group_by(Type) %>%
+  summarize(count = n_distinct(Species))
+```
+
+```{r q6-check}
+ls()
+```
+
+### Question 7
+
+Make a data.frame with the mean height (`HT`) and count of each species. Call it `fl_forests_HT_N`. *Bonus question:* Add code that prints out the name or code of the species which has the highest average height.
+
+```{r q7, exercise=TRUE, exercise.setup='fl_forests_all_setup'}
+
+
+
+
+
+```
+
+```{r q7-solution}
+fl_forests_HT_N <- fl_forests_all %>%
+  group_by(Species) %>%
+  summarise(HT_mean = mean(HT, na.rm = TRUE),
+            count = n())
+
+## another solution not use n()
+fl_forests_HT_N <- fl_forests_all %>%
+  group_by(Species) %>%
+  summarise(HT_mean = mean(HT, na.rm = TRUE),
+            count = length(HT)) ## you can use any variable here
+## Bonus:
+ht_sort <- fl_forests_HT_N %>%
+  arrange(HT)
+ht_sort$Species[1]
+## or
+fl_forests_HT_N %>%
+  slice_max(HT, n = 1)
+```
+
+```{r q7-check}
+ls()
+```
+
+### Question 8
+
+Choose one species from `fl_forests_all` with at least 10 data rows, and make a new data.frame with only the rows for your chosen species. Call it `fl_forests_my_sp`. *Bonus:* Make a plot for your species (any plot!).
+
+```{r q8, exercise=TRUE, exercise.setup='fl_forests_all_setup'}
+
+
+
+
+
+```
+
+```{r q8-solution}
+## multiple solution exist
+## 1 option, look at the fl_forests_HT_N and find a species with 
+## count > 10, I choose Acer barbatum (SPCD = 311)
+fl_forests_my_sp <- fl_forests_all %>%
+  filter(Species == "Acer barbatum")
+## or
+fl_forests_my_sp <- fl_forests_all %>%
+  filter(SPCD == "311")
+```
+
+```{r q8-check}
+ls()
+```
+
+### Question 9
+
+Using `fl_forests_all`, plot height (`HT`) on the y axis vs diameter (`DIA`) on the x axis (using ggplot2). In a code comment, answer the following questions: Do any of the points on the plot look unusual or unexpected? Why? *Bonus:* Remove the unusual points from the plot.
+
+```{r q9, exercise=TRUE, exercise.setup='fl_forests_all_setup'}
+
+
+
+
+
+```
+
+```{r q9-solution}
+## note that the full dataset was too large for some people to
+## plot it in the time limit. I've now removed the time limit
+## but also shown below how to sample a dataset randomly to 
+## reduce it's size
+ggplot(fl_forests_all %>% slice_sample(n = 1000), 
+       aes(y = DIA, x = HT)) +
+  geom_point()
+## Some of the trees seem to have a very low diameter relative
+## to their height (near zero!). This is weird and probably an
+## error
+## Bonus:
+ggplot(fl_forests_all %>% slice_sample(n = 1000) %>%
+         filter(DIA > 1), 
+       aes(y = DIA, x = HT)) +
+  geom_point()
+```
+
+```{r q9-check}
+ls()
+```
+
+### Question 10
+
+Print out the help documentation for the `dplyr` function `slice()`. Write a
+description of what it does in a comment. Use `slice()` or one of its helper
+functions to return the first 10 rows of `fl_forests_all`. For a bonus mark,
+add a line of code showing how you would do the same thing using base R.
+
+```{r q10, exercise=TRUE, exercise.setup='fl_forests_all_setup'}
+
+
+
+
+
+```
+
+```{r q10-solution}
+?slice
+## slice() extracts rows by integer locations
+fl_forests %>%
+  slice(1:10)
+## or
+fl_forests_all %>%
+  slice_head(n = 10)
+## bonus:
+fl_forests_all[1:10, ]
+```
+
+
+```{r q10-check}
+ls()
+```
+
+## Submit
+
+```{r context="server"}
+learnrhash::encoder_logic()
+```
+
+Once you have completed the assignment to your satisfaction, please click the 'generate' button below. This will create a text code that you can copy and paste into the assignment text submission form on canvas, and which I can use to regenerate your answers. Please make sure you copy the entire code. The easiest way is to click the copy button in at the top right. This will copy the entire code to the clipboard.  
+
+Link to Exam Practice #1 Assignment: \  
+[Undergraduate](https://fiu.instructure.com/courses/147557/assignments/1965847) \  
+[Graduate](https://fiu.instructure.com/courses/140925/assignments/1900197) \  
+
+
+```{r encode, echo=FALSE}
+learnrhash::encoder_ui(ui_before = NULL)
+```
+
+<!--### Decode
+
+```{r context="server"}
+learnrhash::decoder_logic()
+```
+
+```{r decode, echo=FALSE}
+learnrhash::decoder_ui()
+```
+-->
+

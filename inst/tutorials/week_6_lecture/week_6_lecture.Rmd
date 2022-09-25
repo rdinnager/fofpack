@@ -1,0 +1,282 @@
+---
+title: "Forests of the Future Week 6 Lecture"
+output:
+  ioslides_presentation:
+    widescreen: true
+runtime: shiny_prerendered
+description: Forests of the Future Week 6 Lecture
+---
+
+```{css echo=FALSE}
+@media print {
+  .topicsContainer,
+  .topicActions,
+  .exerciseActions .skip {
+    display: none;
+  }
+  .topics .tutorialTitle,
+  .topics .section.level2,
+  .topics .section.level3:not(.hide) {
+    display: block;
+  }
+  .topics {
+    width: 100%;
+  }
+  .tutorial-exercise, .tutorial-question {
+    page-break-inside: avoid;
+  }
+  .section.level3.done h3 {
+    padding-left: 0;
+    background-image: none;
+  }
+  .topics .showSkip .exerciseActions::before {
+    content: "Topic not yet completed...";
+    font-style: italic;
+  }
+}
+```
+
+```{r setup_hide, include=FALSE}
+library(learnr)
+library(fofpack)
+
+custom_checker <- function(label, user_code, check_code, envir_result, evaluate_result, envir_prep, last_value, stage, ...) {
+  # this is a code check
+  if(stage == "check") {
+    
+    fofpack::send_env_to_RStudio(envir_prep)
+    
+    rstudioapi::sendToConsole(user_code, focus = TRUE)
+    
+    fofpack::set_env(envir_result)
+
+    list(message = "Code Run; Results Now Available in RStudio.", correct = TRUE, type = "success", location = "append")
+    
+  }
+
+}
+
+tutorial_options(exercise.checker = custom_checker)
+
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+```{r setup, include=FALSE}
+library(fofpack)
+library(tidyverse)
+library(tidymodels)
+library(sf)
+library(mapview)
+
+data("IRC")
+
+```
+
+## Forests of the Future Week 6
+
+### Species Distribution Modelling 2
+
+- Last week we learned how to use `tidymodels` to fit a model to data
+- We modelled the abundance of fish species at different reefs based on their mean temperatures
+- Today we will talk about modelling occurrence data, where we have data on the presence or absence of species at particular sites
+- We will also learn how to preprocess data using `tidymodels`, with the `recipes` package
+
+## Ecological Niche Theory
+
+- All species have an ecological niche
+- An Ecological niche is the position of a species within an ecosystem 
+    - The conditions necessary for persistence of the species
+    - Its ecological role in the ecosystem
+- Combining both more formally:
+    - A niche is: the part of ecological space (defined by all combinations of biotic and abiotic environmental conditions) where the species population can persist and thus utilize resources and impact its environment
+    
+## Ecological Niche Theory
+
+- Niches are often visualized or conceptualized as hump-shaped distributions along an environmental variable
+
+![](images/A+single+niche+axis+e.g.,+pH,+temperature,+or+soil+moisture.jpg)
+## Ecological Niche Theory
+
+- Compare that with the model predictions I made in last lecture:
+
+![](images/2022-09-23 15_09_30-Week 5 Lecture Introduction to Species Distribution Modelling (SDM).pdf - Work -.png)
+
+
+![3D Hypervolume](images/pnas_movies1.webp)
+
+
+## Pine Rocklands Plant Species
+
+```{r setup_, exercise=TRUE}
+library(fofpack)
+library(tidyverse)
+library(tidymodels)
+library(sf)
+library(mapview)
+
+data("IRC")
+IRC
+```
+
+```{r setup_-check}
+ls()
+```
+
+## Slide
+
+```{r specs, exercise=TRUE}
+n_distinct(IRC$area_name)
+n_distinct(IRC$ScientificName)
+```
+
+```{r specs-check}
+ls()
+```
+
+## Species Summary
+
+```{r specs, exercise=TRUE}
+IRC_summ <- IRC %>%
+  filter(Occurrence == "Present") %>%
+  group_by(ScientificName) %>%
+  summarise(num_areas = n_distinct(area_name)) %>%
+  arrange(desc(num_areas)) %>%
+  mutate(spec_num = 1:n())
+
+ggplot(IRC_summ, aes(spec_num, num_areas)) +
+  geom_col() +
+  theme_minimal()
+
+```
+
+```{r specs-check}
+ls()
+```
+
+
+## Let's look at a species
+
+- Florida Slash Pine
+
+```{r  pine_filt, exercise=TRUE}
+slash_pine <- IRC %>%
+  filter(ScientificName == "Pinus elliottii var. densa")
+slash_pine
+```
+
+```{r pine_filt-check}
+ls()
+```
+
+## Where is it?
+
+```{r pine_where, exercise=TRUE}
+slash_pine %>%
+  select(area_name, Occurrence) %>%
+  filter(Occurrence == "Present")
+```
+
+```{r pine_where-check}
+ls()
+```
+
+
+## Presence / Absence Data
+- We are not really modelling numeric data anymore
+- Presence or Absence are categories
+- We do a classification Model, do classify into the present or absent category
+- Most classification Model engines expect the response to be a `factor`
+- Let's use a `recipe` to get our `Occurrence` into such a form
+
+## Recipes
+
+```{r pine_recipe1, exercise=TRUE}
+slash_pine_recipe <- recipe(slash_pine,
+                            Occurrence ~ size + long + lat)
+slash_pine_recipe
+```
+
+```{r pine_recipe1-check}
+ls()
+```
+
+## Recipes
+
+- Processing 'steps' are added to recipes using `step_`-prefixed functions.
+
+```{r pine_recipe2, exercise=TRUE}
+slash_pine_recipe <- recipe(slash_pine,
+                            Occurrence ~ size + long + lat) %>%
+  step_mutate(Occurrence = ifelse(Occurrence == "Present", "Present", "Absent")) %>%
+  step_relevel(Occurrence, ref_level = "Absent")
+slash_pine_recipe %>% 
+  prep() %>%
+  bake(slash_pine)
+```
+
+```{r pine_recipe2-check}
+ls()
+```
+
+## Another problem?
+
+- We want to Model Occurrence as a function of the park size, but size is a character vector.
+- Convert to number using the `stringr` package (which is in `tidyverse`)
+
+```{r pine_recipe3, exercise=TRUE}
+slash_pine_recipe <- recipe(slash_pine,
+                            Occurrence ~ size + long + lat) %>%
+  step_mutate(Occurrence = ifelse(Occurrence == "Present", "Present", "Absent")) %>%
+  step_relevel(Occurrence, ref_level = "Absent") %>%
+  step_mutate(size = as.numeric(str_remove(size, " acres")))
+slash_pine_recipe %>% 
+  prep() %>%
+  bake(slash_pine)
+```
+
+```{r pine_recipe3-check}
+ls()
+```
+
+## Now a Model
+
+```{r pine_model1, exercise=TRUE}
+slash_pine_mod <- logistic_reg() 
+```
+
+```{r pine_model1-check}
+ls()
+```
+
+- That was easy
+
+## Now a combine a recipe and a Model into a Workflow
+
+```{r pine_model2, exercise=TRUE}
+slash_pine_wf <- workflow() %>%
+  add_recipe(slash_pine_recipe) %>%
+  add_model(slash_pine_mod)
+slash_pine_wf
+```
+
+```{r pine_model2-check}
+ls()
+```
+
+---
+
+- Use `fit()` to bake the recipe and fit the model
+
+```{r pine_model3, exercise=TRUE}
+slash_pine_res <- slash_pine_wf %>%
+  fit(data = slash_pine)
+slash_pine_res
+```
+
+```{r pine_model3-check}
+ls()
+```
+
+
+
+## A Simple Joint Species Distribution Model

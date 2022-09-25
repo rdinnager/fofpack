@@ -73,6 +73,44 @@ all_df <- transpose(all_dat)
 
 all_df <- bind_rows(all_df$result)
 
-IRC <- all_df
+colnames(all_df) <- gsub(":", "", colnames(all_df))
+colnames(all_df) <- gsub(" ", "", colnames(all_df))
 
-usethis::use_data(IRC)
+# all_df <- all_df %>%
+#   mutate(area = parse_number(size))
+
+
+
+## P/A it
+
+other_info <- all_df %>%
+  select(ScientificName, area_name,
+         NativeStatus,
+         IntroducedStatus,
+         InvasiveStatus,
+         CultivatedStatus)
+
+introduced <- all_df %>%
+  group_by(ScientificName) %>%
+  summarise(Introduced = ifelse(any(IntroducedStatus == "Introduced"),
+                                "Introduced",
+                                "Not introduced"))
+
+area_info <- all_df %>%
+  group_by(area_name) %>%
+  summarise(size = size[1],
+            long = long[1],
+            lat = lat[1])
+
+IRC <- all_df %>%
+  select(ScientificName,
+         Occurrence,
+         area_name) %>%
+  complete(ScientificName, area_name,
+           fill = list(Occurrence = "Absent"))
+
+IRC <- IRC %>%
+  left_join(introduced) %>%
+  left_join(area_info)
+
+usethis::use_data(IRC, overwrite = TRUE)
