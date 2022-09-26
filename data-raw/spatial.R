@@ -78,3 +78,7 @@ irc_final <- irc_lc_CLC %>%
   summarise(area = sum(as.numeric(area))) %>%
   group_by(area_name) %>%
   mutate(prop = area / sum(area))
+
+parks_LC <- irc_final
+
+usethis::use_data(parks_LC, overwrite = TRUE)
