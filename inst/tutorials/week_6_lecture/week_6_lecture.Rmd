@@ -182,9 +182,32 @@ ls()
 
 
 ## Presence / Absence Data
+
 - We are not really modelling numeric data anymore
 - Presence or Absence are categories
-- We do a classification Model, do classify into the present or absent category
+- We do a classification Model, and classify into the present or absent category
+- Binary classification models typically output a 'probability', a number between 0 and 1
+- Observed data is compared to output using the 'binomial' probability distribution
+
+## Presence / Absence Data
+
+- R has a number of probability distribution built-in which we can use to explore
+
+```{r binomial, exercise=TRUE}
+rbinom(100, 1, 0.5)
+rbinom(100, 1, 0.75)
+rbinom(100, 1, 0.25)
+
+curve(dbinom(x, size = 100, 0.5), 0, 100)
+```
+
+```{r pine_where-check}
+ls()
+```
+
+
+## Presence / Absence Data
+
 - Most classification Model engines expect the response to be a `factor`
 - Let's use a `recipe` to get our `Occurrence` into such a form
 
