@@ -1,0 +1,110 @@
+---
+title: "Forests of the Future: Week 6 Assignment"
+output: 
+  learnr::tutorial:
+    progressive: false
+    language:
+      en:
+        button:
+          runcode: Test Code
+          submitanswer: Run Code
+          questionsubmit: Submit Answer
+          questiontryagain: Change my answer
+runtime: shiny_prerendered
+description: Forests of the Future Week 6 Assignment
+---
+
+```{css echo=FALSE}
+@media print {
+  .topicsContainer,
+  .topicActions,
+  .exerciseActions .skip {
+    display: none;
+  }
+  .topics .tutorialTitle,
+  .topics .section.level2,
+  .topics .section.level3:not(.hide) {
+    display: block;
+  }
+  .topics {
+    width: 100%;
+  }
+  .tutorial-exercise, .tutorial-question {
+    page-break-inside: avoid;
+  }
+  .section.level3.done h3 {
+    padding-left: 0;
+    background-image: none;
+  }
+  .topics .showSkip .exerciseActions::before {
+    content: "Topic not yet completed...";
+    font-style: italic;
+  }
+}
+```
+
+```{r setup_hide, include=FALSE}
+library(learnr)
+library(fofpack)
+
+custom_checker <- function(label, user_code, check_code, envir_result, evaluate_result, envir_prep, last_value, stage, ...) {
+  # this is a code check
+  if(stage == "check") {
+    
+    fofpack::send_env_to_RStudio(envir_prep)
+    
+    rstudioapi::sendToConsole(user_code, focus = TRUE)
+    
+    fofpack::set_env(envir_result)
+    
+    try(save.image(file.path(system.file(package = "fofpack"), "week_5_progress.Rdata"),
+               safe = FALSE),
+        silent = TRUE)
+
+    list(message = "Code Run; Results Now Available in RStudio.", correct = TRUE, type = "success", location = "append")
+    
+  }
+
+}
+
+tutorial_options(exercise.checker = custom_checker,
+                 exercise.timelimit = 300)
+
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+## Forests of the Future Week 6 Assignment
+
+### Forida Pine Rocklands
+
+In this assignment we will be working with  Pine Rockland 
+
+### Setup
+
+```{r setup, include=FALSE}
+library(fofpack)
+library(tidyverse)
+library(tidymodels)
+
+data("RF_abund")
+
+progress <- file.path(system.file(package = "fofpack"), "week_5_progress.Rdata")
+if(file.exists(progress)) {
+  load(progress, envir = rlang::global_env())
+}
+```
+
+The following code loads the packages you will need for this assignment, and the dataset you will be using (and clears the workspace). You will be using a dataset on reef fishes from reefs around the world called `RF_abund`. Don't forget to always click 'Run Code' for each code box, which runs your code in RStudio, and allows you to access the results in later code boxes.
+
+```{r do_setup, exercise=TRUE}
+rm(list = ls())
+library(fofpack)
+library(tidyverse)
+library(tidymodels)
+
+data("RF_abund")
+```
+
+```{r do_setup-check}
+ls()
+```

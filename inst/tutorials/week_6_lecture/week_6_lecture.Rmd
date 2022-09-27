@@ -101,8 +101,76 @@ data("IRC")
 
 ![](images/2022-09-23 15_09_30-Week 5 Lecture Introduction to Species Distribution Modelling (SDM).pdf - Work -.png)
 
+## Generalise to many dimensions 
+
+- Environmental 'hypervolume'
+
 
 ![3D Hypervolume](images/pnas_movies1.webp)
+
+
+```{r setup, include=FALSE}
+library(fofpack)
+library(tidyverse)
+library(tidymodels)
+
+data("RF_abund")
+fish_dat <- RF_abund %>%
+  filter(SpeciesName == "Thalassoma pavo")
+```
+
+## Review from last week
+
+- Modelling fish abundance
+
+```{r, out.width = "300px"}
+knitr::include_graphics("images/week_5_lecture_insertimage_2.png")
+```
+
+```{r RF2, exercise=TRUE}
+data("RF_abund")
+fish_dat <- RF_abund %>%
+  filter(SpeciesName == "Thalassoma pavo")
+```
+
+```{r RF2-check}
+ls()
+```
+
+## What if we only had presence / absence data?
+
+```{r RF1, exercise=TRUE}
+fish_dat$Presence
+```
+
+```{r RF1-check}
+ls()
+```
+
+## Let's model fish occurrence
+
+- Use two variables: Mean Temperature and Depth
+- In order to make them more comparable we will 'standardise' them
+- We will also test our model by creating a test set
+
+---
+
+- Split off a test set:
+
+```{r RF2, exercise=TRUE}
+set.seed(1234)
+data_split <- initial_split(fish_dat, 0.8, strata = Presence)
+
+train_data <- training(data_split)
+test_data <- testing(data_split)
+
+train_data
+test_data
+```
+
+```{r RF2-check}
+ls()
+```
 
 
 ## Pine Rocklands Plant Species
