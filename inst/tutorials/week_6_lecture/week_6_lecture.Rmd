@@ -172,6 +172,25 @@ test_data
 ls()
 ```
 
+## Transform data
+
+- Make symmetric and non-skewd (Yeo-Johnson transformation)
+- Standardise (make mean zero, and standard deviation 1)
+- Before:
+
+```{r RF_plot}
+s_dat <- fish_dat %>%
+  select(MeanTemp_CoralWatch, Depth_Site) %>%
+  pivot_longer(cols = everything(), values_to = "Value", names_to = "Variable")
+ggplot(s_dat, aes(Value)) +
+  geom_histogram(bins = 50) +
+  facet_grid(vars(Variable)) +
+  theme_minimal()
+```
+
+```{r RF3-check}
+ls()
+```
 
 ## Pine Rocklands Plant Species
 
