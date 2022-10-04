@@ -1,6 +1,6 @@
 ---
 title: "Forests of the Future Week 6 Lecture"
-output:
+output: 
   ioslides_presentation:
     widescreen: true
 runtime: shiny_prerendered

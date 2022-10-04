@@ -180,6 +180,10 @@ nj_forests_DIA_Type <- nj_forests_all %>%
   summarize(DIA_mean = mean(DIA, na.rm = TRUE))
 ```
 
+```{r nj_forests_DIA_Type-check}
+ls()
+```
+
 Using this summary `nj_forests_DIA_Type` (which should be available in the code box below once you click 'Run Code' above), plot mean diameter (`DIA_mean`) on the y axis vs the type of forests (`Type`) on the x axis (using ggplot2). 
 
 ```{r q6, exercise=TRUE, exercise.setup='nj_forests_all_setup'}
