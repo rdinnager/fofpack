@@ -51,15 +51,15 @@ custom_checker <- function(label, user_code, check_code, envir_result, evaluate_
   # this is a code check
   if(stage == "check") {
     
-    fofpack::send_env_to_RStudio(envir_prep)
+    #fofpack::send_env_to_RStudio(envir_prep)
     
     rstudioapi::sendToConsole(user_code, focus = TRUE)
     
     fofpack::set_env(envir_result)
     
-    try(save.image(file.path(system.file(package = "fofpack"), "week_5_progress.Rdata"),
-               safe = FALSE),
-        silent = TRUE)
+    # try(save.image(file.path(system.file(package = "fofpack"), "week_5_progress.Rdata"),
+    #            safe = FALSE),
+    #     silent = TRUE)
 
     list(message = "Code Run; Results Now Available in RStudio.", correct = TRUE, type = "success", location = "append")
     

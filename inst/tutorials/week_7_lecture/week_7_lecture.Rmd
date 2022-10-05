@@ -171,6 +171,8 @@ ls()
 
 ## Use `fit` to run a workflow then visualize predictions
 
+Run the following code:
+
 ```{r wf2, exercise=TRUE}
 RF_fit <- RF_wf %>%
   fit(train_data)
@@ -194,9 +196,9 @@ ls()
 augment(RF_fit, test_data) %>%
     roc_auc(.pred_0, truth = Presence)
 ```
+
 ```{r wf3-check}
-augment(RF_fit, test_data) %>%
-    roc_auc(.pred_0, truth = Presence)
+ls()
 ```
 
 ## How to tune the model to improve performance
