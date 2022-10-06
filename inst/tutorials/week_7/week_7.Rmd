@@ -53,7 +53,9 @@ custom_checker <- function(label, user_code, check_code, envir_result, evaluate_
     
     #fofpack::send_env_to_RStudio(envir_prep)
     
-    rstudioapi::sendToConsole(user_code, focus = TRUE)
+    if(label != "PR_model_tune") {
+      rstudioapi::sendToConsole(user_code, focus = TRUE)
+    }
     
     fofpack::set_env(envir_result)
     
@@ -74,6 +76,8 @@ knitr::opts_chunk$set(echo = FALSE)
 ```
 
 ## Forests of the Future Week 7 Assignment
+
+## Part 1
 
 ### Forida Pine Rocklands
 
@@ -159,6 +163,8 @@ question_numeric("Print the `PR_recipe` object out. How many predictor variables
 
 ```
 
+## Part 2
+
 ### Setup a Model and Workflow
 
 Fill in the blanks with the machine learning algorithm and hyper-parameters you chose.
@@ -215,6 +221,8 @@ question("What kind of R object is the `splits` column in the `PR_folds` object?
          answer("function"))
 ```
 
+## Part 3
+
 ### Fit workflow on and tune the model!
 
 First let's setup the metrics we want to calculate. We use the `metric_set()` function below, which already has accuracy and AUC in it. We want to add the True Skill Statistic by `tidymodels` does not have a function to calculate it by default. However: $TSS = Sensitivity + Specificity - 1$, so we will add sensitivity and specificity to our metric set and calculate TSS later. Fill in the blanks to add sensitivity and specificity. Remember we are adding the name of a function (don't add brackets).
@@ -243,7 +251,8 @@ PR_tune <- PR_wf %>%
   tune_grid(PR_folds,
             grid = 25,
             metrics = metrics,
-            control = control_grid(verbose = TRUE))
+            control = control_grid(verbose = FALSE,
+                                   save_workflow = TRUE))
 
 PR_tune
 ```
@@ -252,13 +261,13 @@ PR_tune
 ls()
 ```
 
-### Save the tuning object and the model
+### Save the tuning object
 
 Now save the work you have done so far into an object that you can upload to canvas. Run the following code to save the objects into an '.rds' file. The last line prints the full path where the object is saved. You should be able to paste this into the file dialog on the canvas file upload so you won't have to search your file system for it. Let me know if you need help with this part.
 
 ```{r PR_model_save, exercise=TRUE}
-save_to <- file.path(getwd(), "workflow_and_tuning.rds")
-saveRDS(list(workflow = PR_wf, tuning = PR_tune),
+save_to <- file.path(path.expand("~/"), "workflow_and_tuning.rds")
+saveRDS(PR_tune,
         save_to)
 cat(save_to)
 ```
@@ -267,12 +276,60 @@ Go ahead and upload that to canvas before continuing.
 
 ### Do final fit
 
+Have a look at the top 5 models using `show_best`. Do any models stand out well above the rest?
+Then create `PR_best` with the very best model using the AUC metric (e.g `roc_auc`), by filling in the blank.
 
+```{r PR_model_best, exercise=TRUE}
+PR_tune %>%
+  show_best()
 
+PR_best <- PR_tune %>%
+  select_best("___")
 
-In `fofpack` there is a function called `plot_marginal_predictions()`
+PR_best
+```
 
-Use the R help system to find out what it's arguments are, then try and use it to visualise the model you have just fit.
+```{r PR_model_best-check}
+ls()
+```
+
+At last, do the final fit.
+
+```{r PR_final_fit, exercise=TRUE}
+PR_final_fit <- 
+  PR_wf %>%
+  finalize_workflow(PR_best) %>%
+  last_fit(PR_split)
+
+PR_final_fit %>%
+  collect_metrics()
+```
+
+```{r PR_final_fit-check}
+ls()
+```
+
+That last line prints out the evaluation metrics for the test dataset we split off at the beginning. Think about if your model seems like a good model? 
+
+### Visualize the fit of predictions
+
+Plot the roc curve for your model.
+
+```{r PR_roc, exercise=TRUE}
+
+PR_final_fit %>%
+  collect_predictions() %>%
+  roc_curve(.pred_Present, truth = Pine_Rockland) %>%
+  autoplot()
+
+```
+
+```{r PR_roc-check}
+ls()
+```
+
+That is it! You are done. Please use the 'Submit' tab to get your hash code and submit it on canvas.
+
 
 ## Submit
 

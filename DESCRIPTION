@@ -15,14 +15,11 @@ Imports:
     learnr (>= 0.10.6.9000),
     learnrhash (>= 0.2.0),
     lifecycle,
-    mapview,
     parsermd,
     rlang,
     rstudioapi,
     rvcheck,
-    rvest,
-    stringr,
-    xgboost
+    stringr
 Depends: 
     R (>= 2.10),
     tidymodels,
@@ -33,7 +30,10 @@ Remotes:
 Suggests: 
     knitr,
     rmarkdown,
-    sodium
+    sodium,
+    xgboost,
+    rvest,
+    mapview
 VignetteBuilder: knitr
 URL: https://rdinnager.github.io/fofpack/
 LazyData: true
