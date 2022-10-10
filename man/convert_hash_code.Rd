@@ -9,7 +9,8 @@ convert_hash_code(
   hash_code,
   assignment_path,
   rmd_path = tempfile(fileext = ".Rmd"),
-  student = "Test student"
+  student = "Test student",
+  run = TRUE
 )
 }
 \arguments{

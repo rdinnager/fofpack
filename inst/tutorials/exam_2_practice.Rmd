@@ -1,0 +1,379 @@
+---
+title: "Forests of the Future: Practice Exam 2"
+output: 
+  learnr::tutorial:
+    progressive: false
+    language:
+      en:
+        button:
+          runcode: Test Code
+          submitanswer: Run Code
+          questionsubmit: Submit Answer
+          questiontryagain: Change my answer
+runtime: shiny_prerendered
+description: Forests of the Future Practice Exam 2
+---
+
+```{css echo=FALSE}
+@media print {
+  .topicsContainer,
+  .topicActions,
+  .exerciseActions .skip {
+    display: none;
+  }
+  .topics .tutorialTitle,
+  .topics .section.level2,
+  .topics .section.level3:not(.hide) {
+    display: block;
+  }
+  .topics {
+    width: 100%;
+  }
+  .tutorial-exercise, .tutorial-question {
+    page-break-inside: avoid;
+  }
+  .section.level3.done h3 {
+    padding-left: 0;
+    background-image: none;
+  }
+  .topics .showSkip .exerciseActions::before {
+    content: "Topic not yet completed...";
+    font-style: italic;
+  }
+}
+```
+
+```{r setup_hide, include=FALSE}
+library(learnr)
+library(fofpack)
+
+custom_checker <- function(label, user_code, check_code, envir_result, evaluate_result, envir_prep, last_value, stage, ...) {
+  # this is a code check
+  if(stage == "check") {
+    
+    #fofpack::send_env_to_RStudio(envir_prep)
+    
+    if(label != "PR_model_tune") {
+      rstudioapi::sendToConsole(user_code, focus = TRUE)
+    }
+    
+    fofpack::set_env(envir_result)
+    
+    # try(save.image(file.path(system.file(package = "fofpack"), "week_5_progress.Rdata"),
+    #            safe = FALSE),
+    #     silent = TRUE)
+
+    list(message = "Code Run; Results Now Available in RStudio.", correct = TRUE, type = "success", location = "append")
+    
+  }
+
+}
+
+tutorial_options(exercise.checker = custom_checker,
+                 exercise.timelimit = 300)
+
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+## Forida Pine Rocklands
+
+In this assignment we will be working with Pine Rockland data for South Florida parks. You will be constructing a model to predict the occurrence of a plant species using proportional land cover as predictors. You will be assigned a species and two variables randomly. Fill in the blank below with your name and click 'Run Code' and your assignment will be generated. Please read the results to see which speciesyou are working on. Otherwise, everyone's exam is the same.
+
+### Setup
+
+```{r setup, include=FALSE}
+library(fofpack)
+library(tidyverse)
+library(tidymodels)
+
+```
+
+The following code loads the packages you will need for this assignment, and the dataset you will be using (and clears the workspace). Don't forget to always click 'Run Code' for each code box, which runs your code in RStudio, and allows you to access the results in later code boxes.
+
+```{r do_setup, exercise=TRUE}
+rm(list = ls())
+library(fofpack)
+library(tidyverse)
+library(tidymodels)
+
+data("IRC")
+my_name <- "___"
+
+set.seed(digest::digest2int(my_name))
+species <- IRC %>%
+  filter(Introduced == "Not introduced") %>%
+  group_by(ScientificName) %>%
+  summarise(num_pres = sum(Occurrence == "Present")) %>%
+  filter(num_pres > 60, num_pres < 145) %>%
+  slice_sample(n = 1) %>%
+  pull(ScientificName)
+cat("The species you will be working with is:",
+    species, sep = "\n")
+```
+
+```{r do_setup-check}
+ls()
+```
+
+## Filter your data
+
+Filter your the `IRC` dataset so that it only contains your species.
+
+```{r filter, exercise=TRUE}
+
+mysp_dat <- IRC %>%
+  
+
+```
+
+```{r filter-check}
+ls()
+```
+
+## Merge parks data
+
+The `parks_LC_wide` dataset has data on the land cover categories for each of our parks. Merge this data with your species dataset using `left_join()`
+
+```{r merge, exercise=TRUE}
+data("parks_LC_wide")
+mysp_dat <- mysp_dat %>%
+  
+
+```
+
+```{r merge-check}
+ls()
+```
+
+The above may have led to some missing data for some parks (not all parks have land cover data). The Random Forest model cannot deal with missing data so we need to remove it. Run the next code box which uses the handy `drop_na()` function automatically remove any row that have any missing data.
+
+```{r drop_na, exercise=TRUE}
+
+mysp_dat <- mysp_dat %>%
+  drop_na()
+
+```
+
+```{r drop_na-check}
+ls()
+```
+
+
+## Check your data
+
+This code box runs a function, `make_data()`, that will create the `mysp_dat` dataset from scratch (but calls it `mysp_dat_true`. Compare the `mysp_dat` dataset you created to the `myssp_dat_true` dataset. They should look more or less the same. If your looks wrong, work on your above code to fix what might have went wrong, or move to the next section and use `mysp_dat_true` instead. This is easiest if you just put `mysp_dat <- mysp_dat_true` at the end of the code box below and then click `Run Code` to replace your original dataset with the new one. This will allow you to continue even if you were not able to wrangle the dataset correctly so far.
+
+```{r check_dat, exercise=TRUE}
+
+mysp_dat_true <- make_data(IRC, parks_LC_wide, species)
+mysp_dat_true
+
+```
+
+```{r check_dat-check}
+ls()
+```
+
+## Run
+
+First, split the data into a training and test dataset using `initial_split()`. Fill in the blanks below. Put 80% of the data in the training dataset. Use the `Occurrence` column as the `strata` argument. The last line extracts the training data set.
+
+```{r model_split, exercise=TRUE}
+
+data_split <- initial_split(___, prop = ___, strata = Occurrence)
+
+data_train <- training(data_split)
+
+```
+
+```{r model_split-check}
+ls()
+```
+
+## Setup a recipe
+
+A `recipe` let's us apply a set of transformation to our data that are easily repeatable. Here we will keep it simple. We have a bunch of extra variable we won't be using in the model. We can remove these in our recipe so that we only have our response and land cover predictors left. Examine the variable names of your dataset (`mysp_dat` or `data_train`). Land cover variable all have the same prefix so we can use the `starts_with()` function to select them. Fill in the blank with the correct prefix below:
+
+```{r model_recipe, exercise=TRUE}
+LC_recipe <- recipe(Occurrence ~ ., 
+                    data = data_train) %>%
+  step_select(all_outcomes(), starts_with("___"))
+
+```
+
+```{r model_recipe-check}
+ls()
+```
+
+<div id="model_recipe-hint">
+**Hint:** Make sure you don't add any extra whitespace around your variable prefix or it won't match correctly.
+</div>
+
+Check if you've done it right by prepping the recipe and then baking it with `new_data = NULL`. Does it look right? Now, move on to the model.
+
+```{r prep_recipe, exercise=TRUE}
+test <- prep(LC_recipe) %>%
+  bake(new_data = NULL)
+```
+
+```{r prep_recipe-check}
+ls()
+```
+
+### Setup a Model and Workflow
+
+You are going to fit a Random Forest model. Here you create a Random Forest model object called `LC_mod` and set it's engine to `'ranger'`. We have also added an extra argument to the `set_engine()`. This tells the model fitting algorithm (`ranger`) to estimate a measure of "importance", which we can use later to look at what variables were most important in predicting our species' occurrence. Fill in the last line with code to set the mode to `'classification'`.
+
+```{r model_mod, exercise=TRUE}
+LC_mod <- rand_forest() %>%
+  set_engine('ranger', importance = "impurity") %>%
+  ____
+
+```
+
+```{r model_mod-check}
+ls()
+```
+
+<div id="model_mod-hint">
+**Hint:** The function for setting the engine and the mode are pretty self-explanatory. If you are unsure try typing `set_` in the code box and let the autocomplete give you some suggestions. 
+</div>
+
+## Make Workflow
+
+Create a `workflow` object and add your recipe and model.
+
+```{r model_wf, exercise=TRUE}
+LC_wf <- workflow() %>%
+  ____ %>%
+  ____ 
+
+```
+
+```{r model_wf-check}
+ls()
+```
+
+<div id="model_mod-hint">
+**Hint:** You will need to add two lines, one for the recipe, one for the model. This time typing `add_` and letting the autocomplete help you might be an effective strategy.
+</div>
+
+## Fit the model
+
+Now you can fit the model. Use `last_fit()` to automatically fit the model and test it on your `data_split`. Put the results in an object called `LC_fit`.
+
+
+```{r model_fit, exercise=TRUE}
+LC_fit <- LC_wf %>%
+  last_fit(split = ____)
+
+```
+
+```{r model_fit-check}
+ls()
+```
+
+Print out the metrics (there are multiple ways to do this).
+
+```{r model_print, exercise=TRUE}
+
+
+```
+
+```{r model_print-check}
+ls()
+```
+
+## Look at variable importance
+
+We can extract our model from the `last_fit` object and then visualize the importance values that were calculated using the `vip` package.
+
+```{r model_vip, exercise=TRUE}
+library(vip)
+
+LC_fit_mod <- LC_fit$.workflow[[1]] %>%
+  extract_fit_engine()
+
+vip_scores <- vi(LC_fit_mod)
+
+vip(vip_scores, num_features = 15)
+
+```
+
+```{r model_vip-check}
+ls()
+```
+
+Replace the blank in the following code with the name of the most important variable for your species (just type it in or extract it from `vip_scores` for a bonus mark). Run the code to get a plot of predicted occurrence probability across the range of land cover values of your chosen variable. 
+
+<!--
+
+```{r model_preds, exercise=TRUE}
+imp_var <- "___"
+
+pred_dat <- data.frame(seq(min(mysp_dat[ , imp_var], na.rm = TRUE),
+                                max(mysp_dat[ , imp_var], na.rm = TRUE),
+                                length.out = 200)) %>%
+                   setNames(imp_var) %>%
+                   bind_cols(mysp_dat %>%
+                               select(-all_of(imp_var)) %>%
+                               summarise(across(.fns = mean)) %>%
+                               mutate(ScientificName = as.character(ScientificName),
+                                      Introduced = as.character(Introduced),
+                                      area_name = as.character(area_name),
+                                      size = as.character(size))) %>%
+  mutate(across(-all_of(imp_var)))
+
+preds <- augment(LC_fit$.workflow[[1]],
+                 pred_dat)
+
+```
+
+```{r model_preds-check}
+ls()
+```
+
+-->
+
+## Bonus Exercise
+
+Plot the ROC curve for your model for the test data.
+
+```{r model_curve, exercise=TRUE}
+LC_fit %>%
+  collect_predictions() %>%
+  roc_curve(___, truth = ___) %>%
+  autoplot()
+```
+
+```{r model_curve-check}
+ls()
+```
+
+
+## Submit
+
+```{r context="server"}
+learnrhash::encoder_logic()
+```
+
+Once you have completed the assignment to your satisfaction, please click the 'generate' button below. This will create a text code that you can copy and paste into the assignment text submission form on canvas, and which I can use to regenerate your answers. Please make sure you copy the entire code. The easiest way is to click the copy button in at the top right. This will copy the entire code to the clipboard.  
+
+
+```{r encode, echo=FALSE}
+learnrhash::encoder_ui(ui_before = NULL)
+```
+
+<!--
+### Decode
+
+```{r context="server"}
+learnrhash::decoder_logic()
+```
+
+```{r decode, echo=FALSE}
+learnrhash::decoder_ui()
+```
+-->
+
+

@@ -19,7 +19,8 @@ Imports:
     rlang,
     rstudioapi,
     rvcheck,
-    stringr
+    stringr,
+    vip
 Depends: 
     R (>= 2.10),
     tidymodels,

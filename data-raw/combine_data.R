@@ -26,5 +26,13 @@ spec_preds <- IRC %>%
 PR_parks <- PR_parks %>%
   left_join(spec_preds)
 
+parks_LC_wide <- parks_LC %>%
+  select(area_name, NAME_STATE, prop) %>%
+  mutate(NAME_STATE = paste("LC:", NAME_STATE)) %>%
+  pivot_wider(names_from = NAME_STATE, values_from = prop,
+              values_fill = 0) %>%
+  drop_na()
+
 usethis::use_data(PR_parks, overwrite = TRUE)
+usethis::use_data(parks_LC_wide, overwrite = TRUE)
 
