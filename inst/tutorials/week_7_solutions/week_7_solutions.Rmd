@@ -1,0 +1,403 @@
+---
+title: "Forests of the Future: Week 7 Assignment with Solutions"
+output: 
+  learnr::tutorial:
+    progressive: false
+    language:
+      en:
+        button:
+          runcode: Test Code
+          submitanswer: Run Code
+          questionsubmit: Submit Answer
+          questiontryagain: Change my answer
+runtime: shiny_prerendered
+description: Forests of the Future Week 7 Assignment with Solutions
+---
+
+```{css echo=FALSE}
+@media print {
+  .topicsContainer,
+  .topicActions,
+  .exerciseActions .skip {
+    display: none;
+  }
+  .topics .tutorialTitle,
+  .topics .section.level2,
+  .topics .section.level3:not(.hide) {
+    display: block;
+  }
+  .topics {
+    width: 100%;
+  }
+  .tutorial-exercise, .tutorial-question {
+    page-break-inside: avoid;
+  }
+  .section.level3.done h3 {
+    padding-left: 0;
+    background-image: none;
+  }
+  .topics .showSkip .exerciseActions::before {
+    content: "Topic not yet completed...";
+    font-style: italic;
+  }
+}
+```
+
+```{r setup_hide, include=FALSE}
+library(learnr)
+library(fofpack)
+
+custom_checker <- function(label, user_code, check_code, envir_result, evaluate_result, envir_prep, last_value, stage, ...) {
+  # this is a code check
+  if(stage == "check") {
+    
+    #fofpack::send_env_to_RStudio(envir_prep)
+    
+    if(label != "PR_model_tune") {
+      rstudioapi::sendToConsole(user_code, focus = TRUE)
+    }
+    
+    fofpack::set_env(envir_result)
+    
+    # try(save.image(file.path(system.file(package = "fofpack"), "week_5_progress.Rdata"),
+    #            safe = FALSE),
+    #     silent = TRUE)
+
+    list(message = "Code Run; Results Now Available in RStudio.", correct = TRUE, type = "success", location = "append")
+    
+  }
+
+}
+
+tutorial_options(exercise.checker = custom_checker,
+                 exercise.timelimit = 300)
+
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+## Forests of the Future Week 7 Assignment
+
+## Part 1
+
+### Forida Pine Rocklands
+
+In this assignment we will be working with Pine Rockland data for South Florida parks
+
+### Setup
+
+```{r setup, include=FALSE}
+library(fofpack)
+library(tidyverse)
+library(tidymodels)
+
+data("IRC")
+
+```
+
+The following code loads the packages you will need for this assignment, and the dataset you will be using (and clears the workspace). Don't forget to always click 'Run Code' for each code box, which runs your code in RStudio, and allows you to access the results in later code boxes.
+
+```{r do_setup, exercise=TRUE}
+rm(list = ls())
+library(fofpack)
+library(tidyverse)
+library(tidymodels)
+
+data("PR_parks")
+```
+
+```{r do_setup-check}
+ls()
+```
+
+### Try a Model, Step by Step
+
+First, we will split the data into training and test. Fill in the blanks to extract the training and
+test dataset from the `PR_split` object.
+
+```{r PR_model_split, exercise=TRUE}
+
+set.seed(1234)
+PR_split <- initial_split(PR_parks, 0.8, strata = Pine_Rockland)
+
+PR_train <- ___(PR_split)
+PR_test <- ___(PR_split)
+
+```
+
+```{r PR_model_split-check}
+ls()
+```
+
+```{r PR_model_split-solution}
+
+set.seed(1234)
+PR_split <- initial_split(PR_parks, 0.8, strata = Pine_Rockland)
+
+PR_train <- training(PR_split)
+PR_test <- testing(PR_split)
+
+```
+
+### Setup a recipe
+
+Run the following:
+
+```{r PR_model_recipe, exercise=TRUE}
+PR_recipe <- recipe(Pine_Rockland ~ ., 
+                    data = PR_train) %>%
+  update_role(area_name, new_role = "id variable")
+
+```
+
+```{r PR_model_recipe-check}
+ls()
+```
+
+```{r q1}
+question("Look at the formula for the recipe above. What do you think the `.` on the right hand side means?",
+         answer("A placemarker to fill in later"),
+         answer("A variable named `.`"),
+         answer("One third of an ellipsis"),
+         answer("All variables in the dataset (besides the outcome variable)", correct = TRUE),
+         answer("The end of a sentence"),
+         allow_retry = TRUE)
+
+```
+
+```{r q2}
+question_numeric("Print the `PR_recipe` object out. How many predictor variables are there?",
+         answer(2323, correct = TRUE),
+         allow_retry = TRUE)
+
+```
+
+## Part 2
+
+### Setup a Model and Workflow
+
+Fill in the blanks with the machine learning algorithm and hyper-parameters you chose.
+
+```{r PR_model_mod, exercise=TRUE}
+PR_mod <-
+  ___(___ = tune(), ___ = tune()) %>%
+  set_engine(___) %>%
+  set_mode('classification')
+
+PR_wf <- workflow() %>%
+  add_recipe(PR_recipe) %>%
+  add_model(PR_mod)
+
+PR_wf
+
+```
+
+```{r PR_model_mod-check}
+ls()
+```
+
+```{r PR_model_mod-solution}
+## One of many possibilities
+## For bag_tree() you have to install the package
+## {baguette}
+library(baguette)
+PR_mod <-
+  bag_tree(class_cost = tune(), tree_depth = tune()) %>%
+  set_engine('rpart') %>%
+  set_mode('classification')
+
+PR_wf <- workflow() %>%
+  add_recipe(PR_recipe) %>%
+  add_model(PR_mod)
+
+PR_wf
+```
+
+### Resamples for Cross Validation
+
+Make some cross validation folds. How many you can do might depend on how fast your computer is.
+Start with 6 folds, reduce it later if you think it is taking too long.
+
+```{r PR_model_resample, exercise=TRUE}
+PR_folds <- vfold_cv(PR_train, v = ___, strata = Pine_Rockland)
+PR_folds
+```
+
+```{r PR_model_resample-check}
+ls()
+```
+
+```{r PR_model_resample-solution}
+PR_folds <- vfold_cv(PR_train, v = 6, strata = Pine_Rockland)
+PR_folds
+```
+
+Use `glimpse()` to examine the structure of the `PR_folds` object.
+
+```{r PR_model_glimpse, exercise=TRUE}
+
+
+```
+
+```{r PR_model_glimpse-check}
+ls()
+```
+
+```{r PR_model_glimpse, exercise=TRUE}
+glimpse(PR_folds)
+## looks for the <list> prefixing the splits column for the next question.
+```
+
+```{r q3}
+question("What kind of R object is the `splits` column in the `PR_folds` object?",
+         answer("character"),
+         answer("list", correct = TRUE),
+         answer("double"),
+         answer("splits"),
+         answer("function"),
+         allow_retry = TRUE)
+```
+
+## Part 3
+
+### Fit workflow on and tune the model!
+
+First let's setup the metrics we want to calculate. We use the `metric_set()` function below, which already has accuracy and AUC in it. We want to add the True Skill Statistic by `tidymodels` does not have a function to calculate it by default. However: $TSS = Sensitivity + Specificity - 1$, so we will add sensitivity and specificity to our metric set and calculate TSS later. Fill in the blanks to add sensitivity and specificity. Remember we are adding the name of a function (don't add brackets).
+
+```{r PR_model_metrics, exercise=TRUE}
+metrics <- metric_set(accuracy,
+                      roc_auc,
+                      ___,
+                      ___)
+```
+
+```{r PR_model_metrics-hint}
+## The metrics are in the package yardstick, and are named pretty obviously
+sensitivity
+specificity
+```
+
+```{r PR_model_metrics-check}
+ls()
+```
+
+```{r PR_model_metrics-solution}
+metrics <- metric_set(accuracy,
+                      roc_auc,
+                      sensitivity,
+                      specificity)
+```
+
+Now we can tune the model. We will use 25 values for the hyper-parameter grid. This might take awhile, depending on how fast your computer is.
+
+```{r PR_model_tune, exercise=TRUE}
+PR_tune <- PR_wf %>%
+  tune_grid(PR_folds,
+            grid = 25,
+            metrics = metrics,
+            control = control_grid(verbose = FALSE,
+                                   save_workflow = TRUE))
+
+PR_tune
+```
+
+```{r PR_model_tune-check}
+ls()
+```
+
+
+### Save the tuning object
+
+Now save the work you have done so far into an object that you can upload to canvas. Run the following code to save the objects into an '.rds' file. The last line prints the full path where the object is saved. You should be able to paste this into the file dialog on the canvas file upload so you won't have to search your file system for it. Let me know if you need help with this part.
+
+```{r PR_model_save, exercise=TRUE}
+save_to <- file.path(path.expand("~/"), "workflow_and_tuning.rds")
+saveRDS(PR_tune,
+        save_to)
+cat(save_to)
+```
+
+Go ahead and upload that to canvas before continuing.
+
+### Do final fit
+
+Have a look at the top 5 models using `show_best`. Do any models stand out well above the rest?
+Then create `PR_best` with the very best model using the AUC metric (e.g `roc_auc`), by filling in the blank.
+
+```{r PR_model_best, exercise=TRUE}
+PR_tune %>%
+  show_best()
+
+PR_best <- PR_tune %>%
+  select_best("___")
+
+PR_best
+```
+
+```{r PR_model_best-check}
+ls()
+```
+
+At last, do the final fit.
+
+```{r PR_final_fit, exercise=TRUE}
+PR_final_fit <- 
+  PR_wf %>%
+  finalize_workflow(PR_best) %>%
+  last_fit(PR_split)
+
+PR_final_fit %>%
+  collect_metrics()
+```
+
+```{r PR_final_fit-check}
+ls()
+```
+
+That last line prints out the evaluation metrics for the test dataset we split off at the beginning. Think about if your model seems like a good model? 
+
+### Visualize the fit of predictions
+
+Plot the roc curve for your model.
+
+```{r PR_roc, exercise=TRUE}
+
+PR_final_fit %>%
+  collect_predictions() %>%
+  roc_curve(.pred_Present, truth = Pine_Rockland) %>%
+  autoplot()
+
+```
+
+```{r PR_roc-check}
+ls()
+```
+
+That is it! You are done. Please use the 'Submit' tab to get your hash code and submit it on canvas.
+
+
+## Submit
+
+```{r context="server"}
+learnrhash::encoder_logic()
+```
+
+Once you have completed the assignment to your satisfaction, please click the 'generate' button below. This will create a text code that you can copy and paste into the assignment text submission form on canvas, and which I can use to regenerate your answers. Please make sure you copy the entire code. The easiest way is to click the copy button in at the top right. This will copy the entire code to the clipboard.  
+
+
+```{r encode, echo=FALSE}
+learnrhash::encoder_ui(ui_before = NULL)
+```
+
+<!--
+### Decode
+
+```{r context="server"}
+learnrhash::decoder_logic()
+```
+
+```{r decode, echo=FALSE}
+learnrhash::decoder_ui()
+```
+-->
+
+
