@@ -146,7 +146,7 @@ Run the following:
 PR_recipe <- recipe(Pine_Rockland ~ ., 
                     data = PR_train) %>%
   update_role(area_name, new_role = "id variable")
-
+PR_recipe
 ```
 
 ```{r PR_model_recipe-check}
@@ -197,12 +197,11 @@ ls()
 
 ```{r PR_model_mod-solution}
 ## One of many possibilities
-## For bag_tree() you have to install the package
-## {baguette}
-library(baguette)
+## For logistic_reg() and engine glmnet you have to install the package
+## {glmnet}
 PR_mod <-
-  bag_tree(class_cost = tune(), tree_depth = tune()) %>%
-  set_engine('rpart') %>%
+  logistic_reg(penalty = tune(), mixture = tune()) %>%
+  set_engine('glmnet') %>%
   set_mode('classification')
 
 PR_wf <- workflow() %>%
@@ -242,7 +241,7 @@ Use `glimpse()` to examine the structure of the `PR_folds` object.
 ls()
 ```
 
-```{r PR_model_glimpse, exercise=TRUE}
+```{r PR_model_glimpse-solution}
 glimpse(PR_folds)
 ## looks for the <list> prefixing the splits column for the next question.
 ```
@@ -268,12 +267,6 @@ metrics <- metric_set(accuracy,
                       roc_auc,
                       ___,
                       ___)
-```
-
-```{r PR_model_metrics-hint}
-## The metrics are in the package yardstick, and are named pretty obviously
-sensitivity
-specificity
 ```
 
 ```{r PR_model_metrics-check}
@@ -335,6 +328,16 @@ PR_best
 
 ```{r PR_model_best-check}
 ls()
+```
+
+```{r PR_model_best, exercise=TRUE}
+PR_tune %>%
+  show_best()
+
+PR_best <- PR_tune %>%
+  select_best("roc_auc")
+
+PR_best
 ```
 
 At last, do the final fit.
