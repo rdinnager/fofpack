@@ -2,7 +2,8 @@
 title: "Forests of the Future: Practice Exam 2"
 output: 
   learnr::tutorial:
-    progressive: false
+    progressive: true
+    allow_skip: true
     language:
       en:
         button:
@@ -11,7 +12,7 @@ output:
           questionsubmit: Submit Answer
           questiontryagain: Change my answer
 runtime: shiny_prerendered
-description: Forests of the Future Practice Exam 2
+description: Forests of the Future Exam 2
 ---
 
 ```{css echo=FALSE}
@@ -99,9 +100,10 @@ library(tidymodels)
 data("IRC")
 my_name <- "___"
 
-set.seed(digest::digest2int(my_name))
+set.seed(digest::digest2int(my_name) + 12345)
 species <- IRC %>%
   filter(Introduced == "Not introduced") %>%
+  filter(Occurrence %in% c("Present", "Absent")) %>%
   group_by(ScientificName) %>%
   summarise(num_pres = sum(Occurrence == "Present")) %>%
   filter(num_pres > 60, num_pres < 145) %>%
@@ -115,14 +117,16 @@ cat("The species you will be working with is:",
 ls()
 ```
 
-## Filter your data
+### Exercise 1: Filter your data
 
-Filter your the `IRC` dataset so that it only contains your species.
+Filter your the `IRC` dataset so that it only contains your species. Replace the blank with the correct code for the task. Note that the previous code block stored your species name in the R object `species`. You can choose to use this, or not!
 
 ```{r filter, exercise=TRUE}
 
 mysp_dat <- IRC %>%
-  
+  ___
+
+mysp_dat
 
 ```
 
@@ -130,14 +134,16 @@ mysp_dat <- IRC %>%
 ls()
 ```
 
-## Merge parks data
+### Exercise 2: Merge parks data
 
 The `parks_LC_wide` dataset has data on the land cover categories for each of our parks. Merge this data with your species dataset using `left_join()`
 
 ```{r merge, exercise=TRUE}
 data("parks_LC_wide")
 mysp_dat <- mysp_dat %>%
-  
+  ___
+
+mysp_dat
 
 ```
 
@@ -152,52 +158,62 @@ The above may have led to some missing data for some parks (not all parks have l
 mysp_dat <- mysp_dat %>%
   drop_na()
 
+mysp_dat
+
 ```
 
 ```{r drop_na-check}
 ls()
 ```
 
+### Exercise 3: Add area
 
-## Check your data
+We are also going to use the area of a park in our model this time. Currently the variable `size`, which contains the park area, is a character vector (because it contains "acres" denoting the units). You can extract a number from a character vector `x` using the following code: `parse_number(x)`. Using this information, replace the `size` column in `mysp_dat` with a `numeric` variable containing the park's size. Don't forget to replace `x` with the object you want to convert.
 
-This code box runs a function, `make_data()`, that will create the `mysp_dat` dataset from scratch (but calls it `mysp_dat_true`. Compare the `mysp_dat` dataset you created to the `myssp_dat_true` dataset. They should look more or less the same. If your looks wrong, work on your above code to fix what might have went wrong, or move to the next section and use `mysp_dat_true` instead. This is easiest if you just put `mysp_dat <- mysp_dat_true` at the end of the code box below and then click `Run Code` to replace your original dataset with the new one. This will allow you to continue even if you were not able to wrangle the dataset correctly so far.
+```{r add_area, exercise=TRUE}
 
-```{r check_dat, exercise=TRUE}
-
-mysp_dat_true <- make_data(IRC, parks_LC_wide, species)
-mysp_dat_true
 
 ```
 
-```{r check_dat-check}
+```{r add_area-check}
 ls()
 ```
 
-## Run
+<div id="add_area-hint">
+**Remember:** You can replace a column using `mutate()`. Or you can just directly replace an element using the `$` operator: e.g. `mysp_dat$column_name <- transformed_data`
+</div>
 
-First, split the data into a training and test dataset using `initial_split()`. Fill in the blanks below. Put 80% of the data in the training dataset. Use the `Occurrence` column as the `strata` argument. The last line extracts the training data set.
+### Exercise 4: Split your data
+
+Split the data into a training and test dataset using `initial_split()`. Fill in the blanks below. Put 75% of the data in the training dataset. Use the `Occurrence` column as the `strata` argument. Thene extract the training data set.
 
 ```{r model_split, exercise=TRUE}
 
-data_split <- initial_split(___, prop = ___, strata = Occurrence)
+data_split <- initial_split(mysp_dat, prop = ___, strata = ___)
 
-data_train <- training(data_split)
+data_train <- ___
 
+data_train
 ```
 
 ```{r model_split-check}
 ls()
 ```
 
-## Setup a recipe
+### Exercise 5a: Setup a recipe
 
-A `recipe` let's us apply a set of transformation to our data that are easily repeatable. Here we will keep it simple. We have a bunch of extra variable we won't be using in the model. We can remove these in our recipe so that we only have our response and land cover predictors left. Examine the variable names of your dataset (`mysp_dat` or `data_train`). Land cover variable all have the same prefix so we can use the `starts_with()` function to select them. Fill in the blank with the correct prefix below:
+A `recipe` let's us apply a set of transformation to our data that are easily repeatable. Here we will keep it simple. We have a bunch of extra variable we won't be using in the model. We can remove these in our recipe so that we only have our response and land cover predictors left. Land cover variable all have the same prefix so we can use the `starts_with()` function to select them. 
+
+Fill in the blank in the formula to specify all variables as predictors.
+Also, we want to add `size` to our model. Fill in the blank in `step_select()` to make sure `size` gets included.
 
 ```{r model_recipe, exercise=TRUE}
-LC_recipe <- recipe(Occurrence ~ ., 
+LC_recipe <- recipe(Occurrence ~ ___, 
                     data = data_train) %>%
-  step_select(all_outcomes(), starts_with("___"))
+  step_select(all_outcomes(), starts_with("LC: "), ___,
+              skip = TRUE)
+
+LC_recipe
 
 ```
 
@@ -206,72 +222,72 @@ ls()
 ```
 
 <div id="model_recipe-hint">
-**Hint:** Make sure you don't add any extra whitespace around your variable prefix or it won't match correctly.
+**Remember:** Functions that select variables in `tidyverse` and `tidymodels` generally refer to variable names *without* double quoting them.
 </div>
 
-Check if you've done it right by prepping the recipe and then baking it with `new_data = NULL`. Does it look right? Now, move on to the model.
+### Exercise 5b: Check recipe by prepping and baking
+
+Check if you've done it right by prepping the recipe and then baking it with `new_data = NULL`. Print out the column names of `test` and check you only have the `Occurrence`, the `"LC: "` prefixed variables, and `size`.
 
 ```{r prep_recipe, exercise=TRUE}
 test <- prep(LC_recipe) %>%
   bake(new_data = NULL)
+
+___
 ```
 
 ```{r prep_recipe-check}
 ls()
 ```
 
-### Setup a Model and Workflow
+### Exercise 6: Setup a Model and Workflow
 
-You are going to fit a Random Forest model. Here you create a Random Forest model object called `LC_mod` and set it's engine to `'ranger'`. We have also added an extra argument to the `set_engine()`. This tells the model fitting algorithm (`ranger`) to estimate a measure of "importance", which we can use later to look at what variables were most important in predicting our species' occurrence. Fill in the last line with code to set the mode to `'classification'`.
+You are going to fit a Random Forest model. Fill in the first blank to create a Random Forest model object called `LC_mod` and set it's engine to `'ranger'`. We have also added an extra argument to the `set_engine()`. This tells the model fitting algorithm (`ranger`) to estimate a measure of "importance", which we can use later to look at what variables were most important in predicting our species' occurrence. Fill in the last line with code to set the mode to `'classification'`.
 
 ```{r model_mod, exercise=TRUE}
-LC_mod <- rand_forest() %>%
+LC_mod <- ___() %>%
   set_engine('ranger', importance = "impurity") %>%
   ____
 
+LC_mod
 ```
 
 ```{r model_mod-check}
 ls()
 ```
 
-<div id="model_mod-hint">
-**Hint:** The function for setting the engine and the mode are pretty self-explanatory. If you are unsure try typing `set_` in the code box and let the autocomplete give you some suggestions. 
-</div>
+### Exercise 7: Make Workflow
 
-## Make Workflow
-
-Create a `workflow` object and add your recipe and model.
+Create a `workflow` object and add your recipe and model by filling in the blanks.
 
 ```{r model_wf, exercise=TRUE}
 LC_wf <- workflow() %>%
   ____ %>%
   ____ 
 
+LC_wf
 ```
 
 ```{r model_wf-check}
 ls()
 ```
 
-<div id="model_mod-hint">
-**Hint:** You will need to add two lines, one for the recipe, one for the model. This time typing `add_` and letting the autocomplete help you might be an effective strategy.
-</div>
-
-## Fit the model
+### Exercise 8a: Fit the model
 
 Now you can fit the model. Use `last_fit()` to automatically fit the model and test it on your `data_split`. Put the results in an object called `LC_fit`.
-
 
 ```{r model_fit, exercise=TRUE}
 LC_fit <- LC_wf %>%
   last_fit(split = ____)
 
+LC_fit
 ```
 
 ```{r model_fit-check}
 ls()
 ```
+
+### Exercise 8b: Fit the model
 
 Print out the metrics (there are multiple ways to do this).
 
@@ -284,14 +300,16 @@ Print out the metrics (there are multiple ways to do this).
 ls()
 ```
 
-## Look at variable importance
+### Look at variable importance
 
 We can extract our model from the `last_fit` object and then visualize the importance values that were calculated using the `vip` package.
 
 ```{r model_vip, exercise=TRUE}
 library(vip)
 
-LC_fit_mod <- LC_fit$.workflow[[1]] %>%
+LC_wf_fit <- LC_fit$.workflow[[1]]
+
+LC_fit_mod <- LC_wf_fit %>%
   extract_fit_engine()
 
 vip_scores <- vi(LC_fit_mod)
@@ -304,38 +322,7 @@ vip(vip_scores, num_features = 15)
 ls()
 ```
 
-Replace the blank in the following code with the name of the most important variable for your species (just type it in or extract it from `vip_scores` for a bonus mark). Run the code to get a plot of predicted occurrence probability across the range of land cover values of your chosen variable. 
-
-<!--
-
-```{r model_preds, exercise=TRUE}
-imp_var <- "___"
-
-pred_dat <- data.frame(seq(min(mysp_dat[ , imp_var], na.rm = TRUE),
-                                max(mysp_dat[ , imp_var], na.rm = TRUE),
-                                length.out = 200)) %>%
-                   setNames(imp_var) %>%
-                   bind_cols(mysp_dat %>%
-                               select(-all_of(imp_var)) %>%
-                               summarise(across(.fns = mean)) %>%
-                               mutate(ScientificName = as.character(ScientificName),
-                                      Introduced = as.character(Introduced),
-                                      area_name = as.character(area_name),
-                                      size = as.character(size))) %>%
-  mutate(across(-all_of(imp_var)))
-
-preds <- augment(LC_fit$.workflow[[1]],
-                 pred_dat)
-
-```
-
-```{r model_preds-check}
-ls()
-```
-
--->
-
-## Bonus Exercise
+### Bonus Exercise 1
 
 Plot the ROC curve for your model for the test data.
 
@@ -349,6 +336,38 @@ LC_fit %>%
 ```{r model_curve-check}
 ls()
 ```
+
+### Bonus Exercise 2
+
+Make predictions for your full dataset (`mysp_dat`) using the `augment()` function. Call the object `mysp_preds`
+
+```{r model_predict, exercise=TRUE}
+mysp_preds <- ___
+
+```
+
+```{r model_predict-check}
+ls()
+```
+
+<div id="model_predict-hint">
+**Hint:** A previous code block extracted the fitted workflow object and stored it in `LC_wf_fit`. You can use this object with `augment()` to make predictions on new data (see `?augment.workflow'.
+</div>
+
+### Bonus Exercise 3
+
+Plot the predictions you just made against the parks' `size` using `geom_line()`.
+
+```{r model_plot, exercise=TRUE}
+ggplot(___, aes(___)) +
+  geom_line(___)
+```
+
+```{r model_plot-check}
+ls()
+```
+
+That is it, you are done! Please submit your hash code to Canvas.
 
 
 ## Submit
