@@ -121,6 +121,16 @@ authored by Edzer Pebesma (main developer of `sf` and `stars`)
 > - the meaning of a LL coordinate depends on the geographic _datum_ (e.g., WGS84, ETRS89, NAD27 etc)
 > - a _datum_ is unlikely important when mapping continents, but it is when drones try to deliver pizza's
 
+----
+
+```{r image1, fig.width=500, out.width='65%'}
+knitr::include_graphics("images/week_9_lecture_insertimage_1.png")
+```
+
+Battersby, S. (2017). Map Projections. The Geographic Information Science & Technology Body of Knowledge (2nd Quarter 2017 Edition), John P. Wilson (ed.). DOI: 10.22224/gistbok/2017.2.7
+
+----
+
 ## Simple features
 
 - **feature**: abstraction of real world phenomena (type or instance); has a geometry and other attributes (properties)
@@ -223,14 +233,14 @@ ls()
 
 ---
 
-```{r parks_sf, exercise=TRUE}
+```{r parks_sf2, exercise=TRUE}
 data(parks_LC)
 
 parks_sf <- st_as_sf(parks_LC, coords = c("long", "lat"), crs = 4326)
 parks_sf
 ```
 
-```{r parks_sf-check}
+```{r parks_sf2-check}
 ls()
 ```
 
@@ -248,7 +258,7 @@ ls()
 
 ## `geom_sf`
 
-```{r sf_ggplot, echo = TRUE, fig.height=3}
+```{r sf_ggplot, exercise = TRUE}
 library(ggplot2) 
 
 ggplot(pine_rockland) + 
@@ -264,18 +274,18 @@ ls()
 
 The easiest way to view the spatial data in a geographic context is using the package `{mapview}`
 
-```{r sf_ggplot, echo = TRUE, fig.height=3}
+```{r sf_mapview, exercise = TRUE}
 suppressPackageStartupMessages(library(mapview))
-mapview(rockland, cex = "prop")
+mapview(pine_rockland, cex = "prop")
 ```
 
-```{r sf_ggplot-check}
+```{r sf_mapview-check}
 ls()
 ```
 
 ## fofpack also includes a polygon for florida
 
-```{r sf_ggplot2, echo = TRUE, fig.height=3}
+```{r sf_ggplot2, exercise = TRUE}
 data(florida)
 ggplot(pine_rockland) + 
   geom_sf(data = florida) +
@@ -291,8 +301,12 @@ ls()
 
 ## Quantities
 
-```{r, eval=TRUE, echo = TRUE}
+```{r dist, exercise = TRUE}
 st_distance(pine_rockland) %>% units::set_units("km")
+```
+
+```{r dist-check}
+ls()
 ```
 
 ## Raster data, data cubes
@@ -316,6 +330,8 @@ Data cubes are a more general concept than raster data, e.g.
 - simple features don't scale for raster / imagery data
 - (long) time series on features do neither
 
+--------
+
 Package `github.com/r-spatial/stars` for:
 
 - raster and vector data cubes (arrays)
@@ -327,10 +343,164 @@ Package `github.com/r-spatial/stars` for:
 
 -------
 
-```{r,eval=TRUE,echo=TRUE,fig.width=5,fig.height=3.5}
+```{r bioclim, exercise=TRUE}
 library(stars)
-# http://github.com/r-spatial/stars ; also on CRAN
-tif = system.file("tif/L7_ETMs.tif", package = "stars")
-plot(read_stars(tif), main = paste("Band", 1:6), col = grey(1:9/10))
+data("bioclim_fl")
+data("bioclim_vars")
+
+bioclim_fl
 ```
+
+```{r bioclim-check}
+ls()
+```
+
+----
+
+```{r bioclim_plot, exercise=TRUE}
+plot(bioclim_fl, join_zlim = FALSE)
+```
+
+```{r bioclim_plot-check}
+ls()
+```
+
+## Extracting data from a `stars` object is simple
+
+```{r extract, exercise=TRUE}
+dat_for_parks <- st_extract(bioclim_fl, parks_sf) %>%
+  st_as_sf()
+dat_for_parks
+```
+
+```{r extract-check}
+ls()
+```
+
+---
+
+Some data is `NA`. Why?
+
+- Some points likely misaligned and fall outside the Florida polygon I used.
+
+
+```{r inside, exercise=TRUE}
+inside <- st_within(parks_sf, florida, sparse = FALSE) 
+inside
+plot(florida)
+plot(parks_sf[!inside, ], col = "red", add = TRUE)
+#parks_sf[!inside, ] <- st_snap(parks_sf[!inside, ], st_buffer(florida, -0.001))
+```
+
+```{r inside-check}
+ls()
+```
+
+---
+
+Either need to snap the points into the polygon, get a more detailed polygon, or buffer the polygon to make it slightly larger.
+
+## Why does space matter?
+
+- We want to predict species occurrence on a a landscape to answer the questions:
+  - Where is this species? Where was it? Where will it be?
+  - So out data needs to be spatial, which means, in general, it has a set of coordinates attached to it locating it somewhere.
+
+- Space also creates non-independence between our data points
+  - In other words, space can create spurious correlations
+  - Correlation does not imply direct causation
+  
+## Let's revisit the Reef
+
+```{r RF_abund, exercise=TRUE}
+data("RF_abund")
+data("RF_sites")
+fish_dat <- RF_abund %>%
+  filter(SpeciesName == "Thalassoma pavo") 
+sites <- st_as_sf(RF_sites, coords = c("SiteLong", "SiteLat"),
+                  crs = 4326)
+
+mapview(sites, zcol = "ReefAreaIn15km")
+```
+
+```{r RF_abund-check}
+ls()
+```
+
+## `{spatialsample}`
+
+- A `{tidymodels}` package for 'spatial' cross validation
+- Creates training and validation datasets that are spatially disjoint
+- This is the method suggested in the 'paintings predict species distributions' paper to increase model evaluation accuracy in the presence of spatial autocorrelation (in other words, always)
+
+---
+
+```{r RF_abund2, exercise=TRUE}
+library(spatialsample)
+
+fish_dat <- fish_dat %>%
+  left_join(sites %>%
+              select(SiteCode)) %>%
+  st_sf()
+
+mapview(fish_dat, zcol = "MeanTemp_CoralWatch")
+```
+
+```{r RF_abund2-check}
+ls()
+```
+
+---
+
+```{r RF_abund3, exercise=TRUE}
+data_split <- spatial_block_cv(fish_dat, buffer = 200000)
+autoplot(data_splits)
+autoplot(data_splits$splits[[1]])
+autoplot(data_splits$splits[[2]])
+```
+
+```{r RF_abund3-check}
+ls()
+```
+
+## Next Class
+
+- We will run some `{tidymodels}` models with `{spatialsample}`
+- Learn how to use Global Biodiversity Information Facility (GBIF) to get occurrence data
+- Choose a species to start collecting data for (possibly for final project?)
+
+---
+
+## Sign up for GBIF before next class
+
+- Go to https://www.gbif.org/
+- Click 'login' in upper right corner
+- Click on 'Register' tab
+- Fill in the form, or login with Google, Facebook, or Github
+
+## Next Week
+
+- Look at a method to remove spatial autocorrelation
+- Find out how to make a model when you only have presences and no absences
+- Extract data for point using `{tidysdm}`
+- Talk about Final Projects 
+
+
+```{r do_model, exercise = TRUE}
+RF_recipe <- recipe(training(data_split$splits[[1]]),
+                    Presence ~ MeanTemp_CoralWatch + Depth_Site) %>%
+  step_YeoJohnson(MeanTemp_CoralWatch, Depth_Site) %>%
+  step_normalize(MeanTemp_CoralWatch, Depth_Site)
+
+RF_mod <-
+  boost_tree() %>%
+  set_engine('xgboost') %>%
+  set_mode('classification')
+
+RF_wf <- workflow() %>%
+  add_recipe(RF_recipe) %>%
+  add_model(RF_mod)
+
+```
+
 
