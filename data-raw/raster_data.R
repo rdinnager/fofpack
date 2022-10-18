@@ -23,7 +23,8 @@ for(i in seq_along(bioclim_files)) {
 }
 
 
-bioclim_fl <- read_stars(list.files("extdata/bioclim_fl", full.names = TRUE))
+bioclim_fl <- read_stars(list.files("extdata/bioclim_fl", full.names = TRUE),
+                         along = "band")
 
 bioclim_vars <- tribble(~short_name, ~description,
                         "BIO1", "Annual Mean Temperature",
@@ -46,6 +47,10 @@ bioclim_vars <- tribble(~short_name, ~description,
                         "BIO18", "Precipitation of Warmest Quarter",
                         "BIO19", "Precipitation of Coldest Quarter")
 
-names(bioclim_fl) <- bioclim_vars$short_name
+bioclim_fl <- st_set_dimensions(bioclim_fl,
+                                "band",
+                                bioclim_vars$short_name)
 
 usethis::use_data(bioclim_fl, overwrite = TRUE)
+usethis::use_data(bioclim_vars, overwrite = TRUE)
+
