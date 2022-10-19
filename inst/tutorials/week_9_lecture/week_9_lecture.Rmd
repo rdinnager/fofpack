@@ -320,6 +320,8 @@ ls()
     - time series for points (e.g. hourly PM10 for a set of sensors)
 - data cubes are fashionable but not well defined; watch out for opportunistic definitions.
 
+-------
+
 Data cubes are a more general concept than raster data, e.g.
 
 - number of healthy and ill persons by: region, year, age class
@@ -416,7 +418,8 @@ Either need to snap the points into the polygon, get a more detailed polygon, or
 data("RF_abund")
 data("RF_sites")
 fish_dat <- RF_abund %>%
-  filter(SpeciesName == "Thalassoma pavo") 
+  filter(SpeciesName == "Thalassoma pavo") %>%
+  mutate(Presence = as.factor(Presence))
 sites <- st_as_sf(RF_sites, coords = c("SiteLong", "SiteLat"),
                   crs = 4326)
 
@@ -454,9 +457,9 @@ ls()
 
 ```{r RF_abund3, exercise=TRUE}
 data_split <- spatial_block_cv(fish_dat, buffer = 200000)
-autoplot(data_splits)
-autoplot(data_splits$splits[[1]])
-autoplot(data_splits$splits[[2]])
+autoplot(data_split)
+autoplot(data_split$splits[[1]])
+autoplot(data_split$splits[[2]])
 ```
 
 ```{r RF_abund3-check}
@@ -487,13 +490,13 @@ ls()
 
 
 ```{r do_model, exercise = TRUE}
-RF_recipe <- recipe(training(data_split$splits[[1]]),
+RF_recipe <- recipe(as_tibble(analysis(data_split$splits[[1]])),
                     Presence ~ MeanTemp_CoralWatch + Depth_Site) %>%
   step_YeoJohnson(MeanTemp_CoralWatch, Depth_Site) %>%
   step_normalize(MeanTemp_CoralWatch, Depth_Site)
 
 RF_mod <-
-  boost_tree() %>%
+  boost_tree(trees = tune()) %>%
   set_engine('xgboost') %>%
   set_mode('classification')
 
@@ -501,6 +504,11 @@ RF_wf <- workflow() %>%
   add_recipe(RF_recipe) %>%
   add_model(RF_mod)
 
+RF_res <- RF_wf %>%
+  tune_grid(data_split,
+            grid = 20,
+            control = control_grid(save_pred = TRUE),
+            metrics = metric_set(roc_auc))
 ```
 
 
