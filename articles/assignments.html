@@ -41,6 +41,7 @@
 <li class="active nav-item dropdown">
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
+    <a class="dropdown-item" href="../articles/week_10_lecture_1.html">Forests of the Future: Week 10 Lecture</a>
     <a class="dropdown-item" href="../articles/assignments.html">Forests of the Future: How to Complete and Submit Assignments</a>
   </div>
 </li>
@@ -73,22 +74,30 @@
 <div class="section level2">
 <h2 id="installing-fofpack">Installing <code>fofpack</code><a class="anchor" aria-label="anchor" href="#installing-fofpack"></a>
 </h2>
-<p>The <code>fofpack</code> package includes all data and assignments necessary for the course Forests of the Future. It is regularly updated so it will be necessary to frequently reinstall the package to make sure you have all the most recent update. This document shows you how to install <code>fofpack</code> for the first time. The procedure to <em>re</em>-install is exactly the same. Doing the following will update <code>fofpack</code> to the latest available version.</p>
-<p>The first thing you need is to make sure that the R package <code>devtools</code> is installed.</p>
+<p>The <code>fofpack</code> package includes all data and assignments
+necessary for the course Forests of the Future. It is regularly updated
+so it will be necessary to frequently reinstall the package to make sure
+you have all the most recent update. This document shows you how to
+install <code>fofpack</code> for the first time. The procedure to
+<em>re</em>-install is exactly the same. Doing the following will update
+<code>fofpack</code> to the latest available version.</p>
+<p>The first thing you need is to make sure that the R package
+<code>devtools</code> is installed.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw">if</span><span class="op">(</span><span class="op">!</span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">require</a></span><span class="op">(</span><span class="va"><a href="https://devtools.r-lib.org/" class="external-link">devtools</a></span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"devtools"</span><span class="op">)</span></span>
 <span><span class="op">}</span></span>
 <span><span class="co">#&gt; Loading required package: devtools</span></span>
 <span><span class="co">#&gt; Loading required package: usethis</span></span></code></pre></div>
-<p>Once <code>devtools</code> is installed, then you can run the following:</p>
+<p>Once <code>devtools</code> is installed, then you can run the
+following:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://devtools.r-lib.org/" class="external-link">devtools</a></span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"rdinnager/fofpack"</span>, dependencies <span class="op">=</span> <span class="cn">TRUE</span>, upgrade <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Using github PAT from envvar GITHUB_PAT</span></span>
 <span><span class="co">#&gt; Downloading GitHub repo rdinnager/fofpack@HEAD</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; * checking for file ‘/tmp/RtmpOURNox/remotes3e942d844a04/rdinnager-fofpack-d1b899e/DESCRIPTION’ ... OK</span></span>
+<span><span class="co">#&gt; * checking for file ‘/tmp/Rtmp5qGxO1/remotes3f4640e542f7/rdinnager-fofpack-b4f6787/DESCRIPTION’ ... OK</span></span>
 <span><span class="co">#&gt; * preparing ‘fofpack’:</span></span>
 <span><span class="co">#&gt; * checking DESCRIPTION meta-information ... OK</span></span>
 <span><span class="co">#&gt; * checking for LF line-endings in source and make files and shell scripts</span></span>
@@ -107,18 +116,39 @@
 <span><span class="co">#&gt;   storing paths of more than 100 bytes is not portable:</span></span>
 <span><span class="co">#&gt;   ‘fofpack/inst/tutorials/week_6_lecture/images/A+single+niche+axis+e.g.,+pH,+temperature,+or+soil+moisture.jpg’</span></span>
 <span><span class="co">#&gt; Warning in utils::tar(filepath, pkgname, compression = compression, compression_level = 9L,  :</span></span>
+<span><span class="co">#&gt;   storing paths of more than 100 bytes is not portable:</span></span>
+<span><span class="co">#&gt;   ‘fofpack/vignettes/images/2022-09-23 15_09_30-Week 5 Lecture Introduction to Species Distribution Modelling (SDM).pdf - Work -.png’</span></span>
+<span><span class="co">#&gt; Warning in utils::tar(filepath, pkgname, compression = compression, compression_level = 9L,  :</span></span>
 <span><span class="co">#&gt;   using GNU extension for long pathname</span></span>
 <span><span class="co">#&gt; Installing package into '/home/runner/work/_temp/Library'</span></span>
 <span><span class="co">#&gt; (as 'lib' is unspecified)</span></span></code></pre></div>
-<p>Note that if <code>devtools</code> has not been installed properly then <code><a href="https://devtools.r-lib.org/" class="external-link">library(devtools)</a></code> will fail with an error. If this is the case, try installing <code>devtools</code> again. <code>dependencies = TRUE</code> and <code>upgrade = TRUE</code> should force the installation or upgrading of any package dependencies of <code>fofpack</code>, so you should not have to install dependencies manually. The output of the above command will depend on what package you have installed already.</p>
-<p>When you run the above code you might get a dialog box like this: <img src="images/source_question.png" alt="Source Question"> You will need to make a choice before installation will proceed. I recommend choosing ‘No’, since you should not need to install from source most of the time (this just means the package is ‘compiled’ on your computer instead of simply downloading a ‘precompiled’ package.)</p>
+<p>Note that if <code>devtools</code> has not been installed properly
+then <code><a href="https://devtools.r-lib.org/" class="external-link">library(devtools)</a></code> will fail with an error. If this is
+the case, try installing <code>devtools</code> again.
+<code>dependencies = TRUE</code> and <code>upgrade = TRUE</code> should
+force the installation or upgrading of any package dependencies of
+<code>fofpack</code>, so you should not have to install dependencies
+manually. The output of the above command will depend on what package
+you have installed already.</p>
+<p>When you run the above code you might get a dialog box like this:
+<img src="images/source_question.png" alt="Source Question"> You will
+need to make a choice before installation will proceed. I recommend
+choosing ‘No’, since you should not need to install from source most of
+the time (this just means the package is ‘compiled’ on your computer
+instead of simply downloading a ‘precompiled’ package.)</p>
 <p>During installation you might get a warning like this:</p>
 <div class="figure">
 <img src="images/install_error.png" alt=""><p class="caption">Installation Warning</p>
 </div>
-<p>In most cases this can be ignored because the package was restored from the old version. To get rid of this warning, you musr clear your workspace and then restart R. The above issue happens if the package was in use when R tried to reinstall it. It generally only happens on Windows.</p>
-<p>To test if <code>fofpack</code> has been installed properly, run <code><a href="https://rdinnager.github.io/fofpack/">library(fofpack)</a></code>, and make sure you get no errors.</p>
-<p><strong>###Important</strong>: To make sure <code>fofpack</code> has successfully been updated to the latest version run:</p>
+<p>In most cases this can be ignored because the package was restored
+from the old version. To get rid of this warning, you musr clear your
+workspace and then restart R. The above issue happens if the package was
+in use when R tried to reinstall it. It generally only happens on
+Windows.</p>
+<p>To test if <code>fofpack</code> has been installed properly, run
+<code><a href="https://rdinnager.github.io/fofpack/">library(fofpack)</a></code>, and make sure you get no errors.</p>
+<p><strong>###Important</strong>: To make sure <code>fofpack</code> has
+successfully been updated to the latest version run:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://rdinnager.github.io/fofpack/">fofpack</a></span><span class="op">)</span></span>
 <span><span class="co">#&gt; Loading required package: tidymodels</span></span>
@@ -137,7 +167,7 @@
 <span><span class="co">#&gt; <span style="color: #BB0000;">✖</span> <span style="color: #0000BB;">dplyr</span>::<span style="color: #00BB00;">filter()</span>  masks <span style="color: #0000BB;">stats</span>::filter()</span></span>
 <span><span class="co">#&gt; <span style="color: #BB0000;">✖</span> <span style="color: #0000BB;">dplyr</span>::<span style="color: #00BB00;">lag()</span>     masks <span style="color: #0000BB;">stats</span>::lag()</span></span>
 <span><span class="co">#&gt; <span style="color: #BB0000;">✖</span> <span style="color: #0000BB;">recipes</span>::<span style="color: #00BB00;">step()</span>  masks <span style="color: #0000BB;">stats</span>::step()</span></span>
-<span><span class="co">#&gt; <span style="color: #0000BB;">•</span> Use suppressPackageStartupMessages() to eliminate package startup messages</span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">•</span> Learn how to get started at <span style="color: #00BB00;">https://www.tidymodels.org/start/</span></span></span>
 <span><span class="co">#&gt; Loading required package: tidyverse</span></span>
 <span><span class="co">#&gt; ── <span style="font-weight: bold;">Attaching packages</span> ─────────────────────────────────────── tidyverse 1.3.2 ──</span></span>
 <span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> <span style="color: #0000BB;">readr  </span> 2.1.3     <span style="color: #00BB00;">✔</span> <span style="color: #0000BB;">forcats</span> 0.5.2</span></span>
@@ -153,8 +183,13 @@
 <span><span class="co">#&gt; package is up-to-date devel version</span></span>
 <span><span class="co">#&gt; package is up-to-date devel version</span></span>
 <span><span class="co">#&gt; Everything looks up to date for fofpack!</span></span></code></pre></div>
-<p>If your <code>fofpack</code> is not up to date this function will warn you and provide instructions on how up date.</p>
-<p>Once <code>fofpack</code> is installed, assignments should appear in the ‘Tutorial’ pane of RStudio, where they will be prefixed by the week (e.g. Week 3: Visualising Tidy Data). If they do not appear, try restarting R by clicking ‘Session’, then ‘Restart R’ from the RStudio menu:</p>
+<p>If your <code>fofpack</code> is not up to date this function will
+warn you and provide instructions on how up date.</p>
+<p>Once <code>fofpack</code> is installed, assignments should appear in
+the ‘Tutorial’ pane of RStudio, where they will be prefixed by the week
+(e.g. Week 3: Visualising Tidy Data). If they do not appear, try
+restarting R by clicking ‘Session’, then ‘Restart R’ from the RStudio
+menu:</p>
 <div class="figure">
 <img src="images/restart_r.png" alt=""><p class="caption">Restart R Screenshot</p>
 </div>
@@ -168,11 +203,21 @@
 <div class="figure">
 <img src="images/tutorial_pane.png" alt=""><p class="caption">Tutorial Pane Screenshot</p>
 </div>
-<p>Click on the ‘Start Tutorial’ button to render and load the assignment. If for some reason the assignment is still not showing up in the ‘Tutorial’ pane, even after restarting R, you can run the assignment by typing <code>learnr::run_tutorial("week_?", "fofpack")</code> in the R console, replacing <code>?</code> with week number for the desired assignment (e.g. <code>learnr::run_tutorial("week_3", "fofpack")</code>). It should look something like this:</p>
+<p>Click on the ‘Start Tutorial’ button to render and load the
+assignment. If for some reason the assignment is still not showing up in
+the ‘Tutorial’ pane, even after restarting R, you can run the assignment
+by typing <code>learnr::run_tutorial("week_?", "fofpack")</code> in the
+R console, replacing <code>?</code> with week number for the desired
+assignment
+(e.g. <code>learnr::run_tutorial("week_3", "fofpack")</code>). It should
+look something like this:</p>
 <div class="figure">
 <img src="images/tutorial_example.png" alt=""><p class="caption">Tutorial Screenshot</p>
 </div>
-<p>Go through the assignment, following the instructions. Code boxes with a ‘Submit Answer’ box are required to be completed for full marks. Note that the ‘Submit Answer’ button currently does not do anything other than run the code in the box.</p>
+<p>Go through the assignment, following the instructions. Code boxes
+with a ‘Submit Answer’ box are required to be completed for full marks.
+Note that the ‘Submit Answer’ button currently does not do anything
+other than run the code in the box.</p>
 <div class="figure">
 <img src="images/submit_button.png" alt=""><p class="caption">Submit Button</p>
 </div>
@@ -181,7 +226,9 @@
 <div class="section level2">
 <h2 id="submitting-your-work">Submitting Your Work<a class="anchor" aria-label="anchor" href="#submitting-your-work"></a>
 </h2>
-<p>To actually submit your answers you use the ‘Submit’ section of the assignment. Click on the ‘Submit’ section on the left hand navigation bar for the assignment</p>
+<p>To actually submit your answers you use the ‘Submit’ section of the
+assignment. Click on the ‘Submit’ section on the left hand navigation
+bar for the assignment</p>
 <div class="figure">
 <img src="images/submit.png" alt=""><p class="caption">Submit Section</p>
 </div>
@@ -189,20 +236,34 @@
 <div class="figure">
 <img src="images/generate_page.png" alt=""><p class="caption">Submit Page</p>
 </div>
-<p>Click on the ‘Generate’ button when you are ready to submit (e.g. you have filled in all of the required code boxes and answered the questions). This will generate a text code like this:</p>
+<p>Click on the ‘Generate’ button when you are ready to submit (e.g. you
+have filled in all of the required code boxes and answered the
+questions). This will generate a text code like this:</p>
 <div class="figure">
 <img src="images/hash_code.png" alt=""><p class="caption">Hash Code</p>
 </div>
-<p>This is called a ‘hash’ code, and your answers are encrypted within it. I can retrieve your answers from this code once you submit it on Canvas. Next, click the ‘Copy hash to clipboard’ <img src="images/copy_button.png" alt="copy button"> button to copy the hash code. This is what you will paste into the assignment on Canvas. On Canvas paste the copied hash code into the assignment text box:</p>
+<p>This is called a ‘hash’ code, and your answers are encrypted within
+it. I can retrieve your answers from this code once you submit it on
+Canvas. Next, click the ‘Copy hash to clipboard’ <img src="images/copy_button.png" alt="copy button"> button to copy the
+hash code. This is what you will paste into the assignment on Canvas. On
+Canvas paste the copied hash code into the assignment text box:</p>
 <div class="figure">
 <img src="images/canvas_submit.png" alt=""><p class="caption">Canvas Submit</p>
 </div>
-<p>Please do not add any additional text in the text box or it will corrupt the hash code and I won’t be able to retrieve your answers. If you need to add any additional information please use the ‘comment’ field.</p>
+<p>Please do not add any additional text in the text box or it will
+corrupt the hash code and I won’t be able to retrieve your answers. If
+you need to add any additional information please use the ‘comment’
+field.</p>
 </div>
 <div class="section level2">
 <h2 id="saving-your-work">Saving Your Work<a class="anchor" aria-label="anchor" href="#saving-your-work"></a>
 </h2>
-<p>Progress on your assignment should be saved automatically so that if you close it then reopen it, you should not lose anything. On the left side of the assignment is a small ‘Start Over’ button. Be careful! If you click this the assignment will be reset and you will lose all of your work! Individual exercises can also be reset using the ‘Start Over’ button in the code box:</p>
+<p>Progress on your assignment should be saved automatically so that if
+you close it then reopen it, you should not lose anything. On the left
+side of the assignment is a small ‘Start Over’ button. Be careful! If
+you click this the assignment will be reset and you will lose all of
+your work! Individual exercises can also be reset using the ‘Start Over’
+button in the code box:</p>
 <div class="figure">
 <img src="images/startover_box.png" alt=""><p class="caption">Start Over in Box</p>
 </div>
