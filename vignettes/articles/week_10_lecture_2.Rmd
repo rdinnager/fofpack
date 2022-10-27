@@ -35,6 +35,7 @@ description: Forests of the Future Week 10 Lecture Part 2
     font-style: italic;
   }
 }
+
 ```
 
 ```{r setup, include = FALSE}
@@ -48,6 +49,8 @@ library(mapview)
 
 options(datatable.alloccol = 1024,
         datatable.verbose = FALSE)
+## skip rendering for now
+knitr::opts_chunk$set(eval = FALSE)
 ```
 
 ## Last class
