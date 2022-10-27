@@ -31,7 +31,7 @@ Depends:
     R (>= 2.10),
     tidymodels,
     tidyverse
-Remotes:  
+Remotes: 
     rstudio/learnr,
     rundel/learnrhash,
     rdinnager/tidysdm
@@ -41,7 +41,8 @@ Suggests:
     sodium,
     xgboost,
     rvest,
-    prettydoc
+    prettydoc,
+    ranger
 VignetteBuilder: knitr
 URL: https://rdinnager.github.io/fofpack/
 LazyData: true
