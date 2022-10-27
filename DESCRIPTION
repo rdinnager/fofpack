@@ -23,6 +23,7 @@ Imports:
     rvcheck,
     sf,
     spatialsample,
+    stars,
     stringr,
     vip
 Depends: 
