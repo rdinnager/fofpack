@@ -25,14 +25,16 @@ Imports:
     spatialsample,
     stars,
     stringr,
+    tidysdm (>= 0.0.0.9000),
     vip
 Depends: 
     R (>= 2.10),
     tidymodels,
     tidyverse
-Remotes: 
+Remotes:  
     rstudio/learnr,
-    rundel/learnrhash
+    rundel/learnrhash,
+    rdinnager/tidysdm
 Suggests: 
     knitr,
     rmarkdown,
