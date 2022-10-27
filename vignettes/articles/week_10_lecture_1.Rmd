@@ -113,20 +113,12 @@ sachsia <- sachsia %>%
 mapview(sachsia)
 ```
 
-```{r get_points-check}
-ls()
-```
-
 ## Create Background Area
 
 ```{r bg}
 bg <- create_background(sachsia, buffer = 20000, max_bg = florida)
 mapview(bg)
 
-```
-
-```{r bg-check}
-ls()
 ```
 
 ## Sample Pseudo-Absences
@@ -139,19 +131,11 @@ mapview(sachsia_dat, zcol = "present")
 
 ```
 
-```{r bg_pnts-check}
-ls()
-```
-
 ## Add environmental variables
 
 ```{r env}
 sachsia_dat <- add_env_vars(sachsia_dat, bioclim_fl)
 sachsia_dat
-```
-
-```{r env-check}
-ls()
 ```
 
 ## Remove NAs
@@ -161,10 +145,6 @@ sachsia_dat <- sachsia_dat %>%
   drop_na(BIO1:BIO19)
 mapview(st_sf(sachsia_dat), zcol = "present")
 mapview(st_sf(sachsia_dat), zcol = "BIO1")
-```
-
-```{r process-check}
-ls()
 ```
 
 ## Make a recipe
@@ -183,10 +163,6 @@ sachsia_recipe <- recipe(sachsia_dat,
 sachsia_recipe
 ```
 
-```{r recipe-check}
-ls()
-```
-
 ## Make Model and Workflow
 
 ```{r wf}
@@ -201,10 +177,6 @@ sachsia_wf <- workflow() %>%
 sachsia_wf
 ```
 
-```{r wf-check}
-ls()
-```
-
 ## Fit Workflow
 
 ```{r fit}
@@ -212,10 +184,6 @@ sachsia_fit <- sachsia_wf %>%
   fit(sachsia_dat)
 
 sachsia_fit
-```
-
-```{r fit-check}
-ls()
 ```
 
 ## Make a prediction dataset
@@ -232,10 +200,6 @@ sachsia_grid <- sdm_data(sachsia, bg,
 mapview(sachsia_grid)
 ```
 
-```{r grid-check}
-ls()
-```
-
 ## Add environmental variable and predict
 
 ```{r grid_env}
@@ -246,10 +210,6 @@ sachsia_grid_dat
 
 sachsia_preds <- sachsia_fit %>% 
   augment(sachsia_grid_dat)
-```
-
-```{r grid_env-check}
-ls()
 ```
 
 ## Plot predictions
@@ -264,10 +224,6 @@ ggplot(sachsia_preds %>% bind_cols(coords), aes(X, Y)) +
                         trans = "logit") +
   coord_sf(ylim = c(24.5, 25.9), xlim = c(-81.6, -79.8)) +
   theme_minimal()
-```
-
-```{r plot_pred-check}
-ls()
 ```
 
 ## Final Projects
