@@ -37,7 +37,8 @@ Suggests:
     rmarkdown,
     sodium,
     xgboost,
-    rvest
+    rvest,
+    prettydoc
 VignetteBuilder: knitr
 URL: https://rdinnager.github.io/fofpack/
 LazyData: true
