@@ -597,7 +597,7 @@ library(vip)
 
 PR_final_fit %>% 
   extract_fit_parsnip() %>% 
-  vip(num_features = 30)
+  vip(num_features = 20)
 
 ```
 
