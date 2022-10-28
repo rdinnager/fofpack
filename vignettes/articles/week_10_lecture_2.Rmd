@@ -41,11 +41,11 @@ description: Forests of the Future Week 10 Lecture Part 2
 ```{r setup, include = FALSE}
 library(ENMTools)
 library(tidyverse)
-library(tidymodels)
 library(spatialsample)
 library(tidysdm)
 library(sf)
 library(mapview)
+library(tidymodels)
 
 options(datatable.alloccol = 1024,
         datatable.verbose = FALSE)
