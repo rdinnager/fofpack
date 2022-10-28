@@ -3,8 +3,12 @@ pkgdown: 2.0.6
 pkgdown_sha: ~
 articles:
   week_10_lecture_1: week_10_lecture_1.html
+  week_10_lecture_2: week_10_lecture_2.html
+  week_5_lecture: week_5_lecture.html
+  week_6_lecture: week_6_lecture.html
+  week_7_lecture: week_7_lecture.html
   assignments: assignments.html
-last_built: 2022-10-27T19:07Z
+last_built: 2022-10-28T02:17Z
 urls:
   reference: https://rdinnager.github.io/fofpack/reference
   article: https://rdinnager.github.io/fofpack/articles
