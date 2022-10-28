@@ -308,7 +308,7 @@ mod_summ
 
 
 ```{r parsnip4}
-preds <- predict(mod_pars, newdata = fish_dat)
+preds <- predict(mod_pars, new_data = fish_dat)
 preds
 pred_dat <- fish_dat %>%
   bind_cols(preds)
@@ -349,7 +349,7 @@ mod_pars2
 ## The power of `parsnip`
 
 ```{r randforest2}
-preds2 <- predict(mod_pars2, newdata = fish_dat)
+preds2 <- predict(mod_pars2, new_data = fish_dat)
 pred_dat2 <- fish_dat %>%
   bind_cols(preds2) 
 ```
